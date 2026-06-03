@@ -5,15 +5,31 @@ import os
 # Configurazione pagina
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
-# CSS aggiornato: centraggio logo e stile compatto
+# CSS aggiornato: centraggio forzato e font "cattivo"
 st.markdown("""
 <style>
 .stApp { background-color: #161719; }
 
-/* Centra il logo e le immagini */
-[data-testid="stImage"] {
+/* Centra tutto nel contenitore principale */
+.main .block-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Centratura specifica per il logo */
+div[data-testid="stImage"] {
+    display: flex;
+    justify-content: center !important;
+}
+
+/* Font Biker per il titolo */
+.titolo-biker {
+    font-family: 'Impact', sans-serif !important;
+    text-align: center;
+    color: #ff9100 !important;
+    font-size: 2.5rem !important;
+    margin-top: 10px;
     margin-bottom: 20px;
 }
 
@@ -24,10 +40,11 @@ st.markdown("""
     border: 3px solid #ff9100; 
     border-radius: 10px; 
     color: white; 
+    width: 100%;
 }
 h3 { color: #ff9100; font-size: 1.6rem !important; margin-bottom: 5px !important; }
 
-/* Nasconde il menu di Streamlit e il footer */
+/* Nasconde il menu di Streamlit */
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 </style>
@@ -40,7 +57,8 @@ if os.path.exists("logo_custom.png"):
     except:
         pass
 
-st.markdown("<h1 style='text-align: center; color: white;'>Iron & Rubber</h1>", unsafe_allow_html=True)
+# Titolo con font personalizzato
+st.markdown("<h1 class='titolo-biker'>IRON & RUBBER</h1>", unsafe_allow_html=True)
 
 # Caricamento Dati
 try:
@@ -58,7 +76,6 @@ try:
             st.subheader(nome)
             st.write(f"📅 **{data}** | 📍 **{luogo}**")
             
-            # Caricamento Locandina
             if locandina and os.path.exists(locandina):
                 try:
                     st.image(locandina, use_container_width=True)
