@@ -30,17 +30,21 @@ st.title("Iron & Rubber")
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     
+# Sostituisci il blocco for nel tuo codice con questo:
     for index, row in df.iterrows():
+        # Convertiamo il valore della locandina in stringa per sicurezza
+        locandina_path = str(row['Locandina']) if pd.notna(row['Locandina']) else ""
+        
         with st.container():
             st.markdown('<div class="dettaglio-box">', unsafe_allow_html=True)
-            st.subheader(row['Nome Evento / Raduno'])
+            st.subheader(row['Nome Evento'])
             st.write(f"📅 {row['Data']} | 📍 {row['Luogo']}")
             
-            # Caricamento immagine (Assicura che il percorso nel file Excel sia 'locandine/nomefoto.jpg')
-            if os.path.exists(row['Locandina']):
-                st.image(row['Locandina'], use_container_width=True)
+            # Controlliamo se il file esiste e se il percorso è valido
+            if locandina_path and os.path.exists(locandina_path):
+                st.image(locandina_path, use_container_width=True)
             else:
-                st.warning("Locandina non trovata")
+                st.write("*(Nessuna locandina disponibile)*")
                 
             st.markdown('</div>', unsafe_allow_html=True)
             
