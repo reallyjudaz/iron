@@ -2,33 +2,38 @@ import streamlit as st
 import pandas as pd
 import os
 
+# Configurazione mobile
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
+# CSS "Blindato": nasconde tutto quello che disturba e centra in modo forzato
 st.markdown("""
 <style>
+/* Sfondo nero */
 .stApp { background-color: #161719; }
 
-/* Forza il logo al centro con posizione assoluta nel contenitore */
-.stImage {
-    display: flex !important;
-    justify-content: center !important;
-}
-.stImage > img {
-    margin: 0 auto !important;
+/* Forza il contenuto al centro e nasconde gli elementi di disturbo */
+#MainMenu, footer, header, .viewerBadge_container__1QSob, .stDeployButton { visibility: hidden !important; display: none !important; }
+
+/* Centratura logo e titoli */
+.block-container { align-items: center !important; }
+
+div[data-testid="stImage"] { 
+    display: flex !important; 
+    justify-content: center !important; 
+    width: 100% !important; 
 }
 
-/* FONT ROCK: Impact è quello più "pesante" e da poster rock */
-.titolo-biker {
-    font-family: 'Impact', Charcoal, sans-serif !important;
+/* Titolo Stile Rock */
+.titolo-rock {
+    font-family: 'Impact', sans-serif !important;
     text-align: center;
     color: #ff9100 !important;
-    font-size: 2.5rem !important;
-    letter-spacing: 2px;
-    margin: 15px 0;
+    font-size: 2.2rem !important;
+    margin: 10px 0;
     text-transform: uppercase;
-    text-shadow: 2px 2px 4px #000000;
 }
 
+/* Box eventi */
 .dettaglio-box { 
     background-color: #1f2124; 
     padding: 15px; 
@@ -38,21 +43,18 @@ st.markdown("""
     color: white; 
     width: 100%;
 }
-h3 { color: #ff9100; font-family: 'Impact', sans-serif !important; font-size: 1.6rem !important; }
-
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
+h3 { color: #ff9100; font-family: 'Impact', sans-serif !important; font-size: 1.4rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# Logo
+# Logo Centrato
 if os.path.exists("logo_custom.png"):
     st.image("logo_custom.png", width=220)
 
 # Titolo Rock
-st.markdown("<h1 class='titolo-biker'>IRON & RUBBER</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='titolo-rock'>IRON & RUBBER</h1>", unsafe_allow_html=True)
 
-# Caricamento Dati
+# Dati
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
@@ -63,17 +65,15 @@ try:
         luogo = str(row.get('Luogo', 'N/D'))
         locandina = str(row.get('Locandina', ''))
         
-        with st.container():
-            st.markdown('<div class="dettaglio-box">', unsafe_allow_html=True)
-            st.subheader(nome)
-            st.write(f"📅 **{data}** | 📍 **{luogo}**")
-            
-            if locandina and os.path.exists(locandina):
-                st.image(locandina, use_container_width=True)
-            else:
-                st.write("*(Nessuna locandina)*")
-                
-            st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="dettaglio-box">', unsafe_allow_html=True)
+        st.subheader(nome)
+        st.write(f"📅 **{data}** | 📍 **{luogo}**")
+        
+        if locandina and os.path.exists(locandina):
+            st.image(locandina, use_container_width=True)
+        else:
+            st.write("*(Nessuna locandina)*")
+        st.markdown('</div>', unsafe_allow_html=True)
             
 except Exception as e:
-    st.error(f"Errore: {e}")
+    st.error(f"Errore caricamento: {e}")
