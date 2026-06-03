@@ -33,7 +33,7 @@ try:
     for index, row in df.iterrows():
         with st.container():
             st.markdown('<div class="dettaglio-box">', unsafe_allow_html=True)
-            st.subheader(row['Nome Evento'])
+            st.subheader(row['Nome Evento / Raduno'])
             st.write(f"📅 {row['Data']} | 📍 {row['Luogo']}")
             
             # Caricamento immagine (Assicura che il percorso nel file Excel sia 'locandine/nomefoto.jpg')
