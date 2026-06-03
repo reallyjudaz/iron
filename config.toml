@@ -1,0 +1,8 @@
+[client]
+showSidebarNavigation = false
+
+[menuItems]
+"Get help" = ""
+"Report a bug" = ""
+"About" = ""
+"Fork this app" = ""
