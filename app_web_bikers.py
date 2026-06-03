@@ -8,27 +8,25 @@ st.markdown("""
 <style>
 .stApp { background-color: #161719; }
 
-/* Centratura totale */
-.block-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* Forza il logo al centro con posizione assoluta nel contenitore */
+.stImage {
+    display: flex !important;
+    justify-content: center !important;
+}
+.stImage > img {
+    margin: 0 auto !important;
 }
 
-/* Logo container */
-.logo-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-
-/* Titolo ridotto e centrato */
+/* FONT ROCK: Impact è quello più "pesante" e da poster rock */
 .titolo-biker {
-    font-family: 'Impact', sans-serif !important;
+    font-family: 'Impact', Charcoal, sans-serif !important;
     text-align: center;
     color: #ff9100 !important;
-    font-size: 1.8rem !important; /* Ridotto */
-    margin: 10px 0;
+    font-size: 2.5rem !important;
+    letter-spacing: 2px;
+    margin: 15px 0;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px #000000;
 }
 
 .dettaglio-box { 
@@ -40,20 +38,18 @@ st.markdown("""
     color: white; 
     width: 100%;
 }
-h3 { color: #ff9100; font-size: 1.4rem !important; }
+h3 { color: #ff9100; font-family: 'Impact', sans-serif !important; font-size: 1.6rem !important; }
 
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# Logo in un contenitore centrato
+# Logo
 if os.path.exists("logo_custom.png"):
-    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image("logo_custom.png", width=200) # Leggermente più piccolo
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.image("logo_custom.png", width=220)
 
-# Titolo compatto
+# Titolo Rock
 st.markdown("<h1 class='titolo-biker'>IRON & RUBBER</h1>", unsafe_allow_html=True)
 
 # Caricamento Dati
@@ -73,10 +69,7 @@ try:
             st.write(f"📅 **{data}** | 📍 **{luogo}**")
             
             if locandina and os.path.exists(locandina):
-                try:
-                    st.image(locandina, use_container_width=True)
-                except:
-                    st.write("*(Errore immagine)*")
+                st.image(locandina, use_container_width=True)
             else:
                 st.write("*(Nessuna locandina)*")
                 
