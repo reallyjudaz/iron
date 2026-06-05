@@ -10,10 +10,21 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 
-/* NASCONDE TUTTI I TASTI DI STREAMLIT */
-#MainMenu, footer, header, .stDeployButton, [data-testid="stToolbar"], [data-testid="stDecoration"], [data-testid="stStatusWidget"], .stAppDeployButton { 
-    visibility: hidden !important; 
-    display: none !important; 
+/* NASCONDERE FORZATAMENTE TUTTO IL MENU E I TASTI DI SISTEMA */
+#MainMenu {visibility: hidden !important;}
+header {visibility: hidden !important;}
+footer {visibility: hidden !important;}
+.stDeployButton {display:none !important;}
+div[data-testid="stToolbar"] {display:none !important;}
+div[data-testid="stDecoration"] {display:none !important;}
+div[data-testid="stStatusWidget"] {display:none !important;}
+button[kind="secondary"] {visibility: hidden !important;} /* Attenzione: questo nasconde tutti i bottoni secondari */
+
+/* NOTA BENE: Se i tasti persistono, usiamo il "nuke" totale sui componenti di sistema:
+*/
+.stAppDeployButton, .stAppViewAction {
+    display: none !important;
+    visibility: hidden !important;
 }
 
 .block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
@@ -50,7 +61,7 @@ div[data-testid="stImage"] { width: 100% !important; display: flex !important; j
     margin-bottom: 20px !important;
 }
 
-/* Eventi - Testo ridotto e minimalista */
+/* Eventi */
 .event-box { background-color: #1f2124; padding: 8px; margin-bottom: 12px; border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
 .event-box h3 { font-size: 0.9rem !important; margin-bottom: 3px !important; text-transform: uppercase; }
 .event-box p { font-size: 0.75rem !important; margin-bottom: 3px !important; opacity: 0.9; }
@@ -86,6 +97,7 @@ try:
         if img_path and os.path.exists(img_path):
             st.image(img_path, use_container_width=True)
         
+        # Nota: i bottoni dei singoli eventi sono di tipo "primary" o "secondary"
         if st.button(f"Parteciperò! ({st.session_state.voti[nome]})", key=f"btn_{i}"):
             st.session_state.voti[nome] += 1
             st.rerun()
