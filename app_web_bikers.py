@@ -4,7 +4,7 @@ import os
 
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
-# --- CSS DEFINITIVO ---
+# --- CSS CORRETTO PER MANTENERE LA RIGA COMPATTA ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
@@ -12,7 +12,7 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important; }
-.block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; align-items: center !important; }
+.block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; }
 
 /* Logo & Titoli */
 .logo-wrapper { display: flex !important; justify-content: center !important; width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-bottom: 0px !important; }
@@ -21,15 +21,18 @@ st.markdown("""
 
 /* Box Eventi */
 .event-box { background-color: #1f2124; padding: 10px; margin-bottom: 12px; border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
-.dettaglio-box { background-color: #ff9100; padding: 20px; border-radius: 15px; color: black; font-weight: bold; margin-bottom: 20px; text-align: center; }
+
+/* RIGA BOTTONI COMPATTA */
+.row-container { display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; gap: 5px !important; }
 
 /* Contatore */
-.contatore-targhetta { background-color: #1f2124; color: #ff9100; padding: 5px 0; border-radius: 5px; font-family: 'Special Elite', cursive; font-weight: bold; border: 2px solid #ff9100; text-align: center; height: 38px; display: flex; align-items: center; justify-content: center; }
+.contatore-targhetta { background-color: #1f2124; color: #ff9100; padding: 5px 10px; border-radius: 5px; font-family: 'Special Elite', cursive; font-weight: bold; border: 2px solid #ff9100; text-align: center; height: 38px; display: flex; align-items: center; justify-content: center; width: 100%; }
 
-/* Bottoni */
-div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; border: none !important; font-weight: bold !important; font-family: 'Special Elite', cursive !important; border-radius: 5px !important; height: 38px !important; width: 100%; }
+/* Bottoni forzati */
+div[data-testid="stButton"] { width: 100% !important; }
+div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; border: none !important; font-weight: bold !important; font-family: 'Special Elite', cursive !important; border-radius: 5px !important; height: 38px !important; width: 100% !important; padding: 0 5px !important; font-size: 0.8rem !important; }
 
-/* Menu */
+/* Menu Fisso */
 .menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 15px; border-top: 3px solid #ff9100; z-index: 9999; }
 </style>
 """, unsafe_allow_html=True)
@@ -45,12 +48,10 @@ if os.path.exists("logo_custom.png"):
     st.markdown('</div>', unsafe_allow_html=True)
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 
-# Caricamento Dati
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
 
-    # --- LOGICA: LISTA VS DETTAGLIO ---
     if st.session_state.evento_selezionato is None:
         st.markdown("<p class='sottotitolo'>«Seleziona l'evento per i dettagli»</p>", unsafe_allow_html=True)
         
@@ -60,10 +61,11 @@ try:
             
             st.markdown(f"<div class='event-box'><h3>{nome}</h3><p>📅 {row['Data']} | 📍 {row['Luogo']}</p>", unsafe_allow_html=True)
             
-            # --- RIGA CON 3 ELEMENTI ---
-            c1, c2, c3 = st.columns([1, 1, 0.5])
+            # --- RIGA FORZATA CON CONTAINER ---
+            st.markdown("<div class='row-container'>", unsafe_allow_html=True)
+            c1, c2, c3 = st.columns([1.5, 1.5, 0.7])
             with c1:
-                if st.button("DETTAGLI", key=f"dett_{i}"):
+                if st.button("INFO", key=f"dett_{i}"):
                     st.session_state.evento_selezionato = i
                     st.rerun()
             with c2:
@@ -72,33 +74,24 @@ try:
                     st.rerun()
             with c3:
                 st.markdown(f"<div class='contatore-targhetta'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
-            
+            st.markdown("</div>", unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
     else:
-        # --- VISTA DETTAGLIO ---
+        # DETTAGLIO
         idx = st.session_state.evento_selezionato
         row = df.iloc[idx]
-        st.markdown(f"<div class='dettaglio-box'>", unsafe_allow_html=True)
-        st.write(f"<h2>{row['Nome Evento / Raduno']}</h2>", unsafe_allow_html=True)
-        
-        if os.path.exists(str(row.get('Locandina', ''))):
-            st.image(str(row['Locandina']), use_container_width=True)
-            
+        st.markdown(f"<div class='event-box'><h2>{row['Nome Evento / Raduno']}</h2>", unsafe_allow_html=True)
+        if os.path.exists(str(row.get('Locandina', ''))): st.image(str(row['Locandina']), use_container_width=True)
         st.write(f"📅 Data: {row['Data']} | 📍 Luogo: {row['Luogo']}")
-        
-        if st.button("⬅ TORNA ALLA LISTA"):
+        if st.button("⬅ TORNA"):
             st.session_state.evento_selezionato = None
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
+except: pass
 
-except Exception:
-    pass
-
-# --- MENU FISSO ---
+# --- MENU FISSO (SEMPRE PRESENTE) ---
 st.markdown("<div class='menu-fisso'>", unsafe_allow_html=True)
-if st.button("HOME", key="nav_home"):
-    st.session_state.evento_selezionato = None
-    st.rerun()
+if st.button("HOME", key="nav_home"): st.session_state.evento_selezionato = None; st.rerun()
 st.button("MC", key="nav_mc")
 st.button("ADMIN", key="nav_admin")
 st.markdown("</div>", unsafe_allow_html=True)
