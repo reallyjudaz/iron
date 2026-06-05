@@ -11,8 +11,7 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 
-/* Nasconde solo header e footer standard, lasciamo i tasti di sistema liberi 
-   per non sovrapporsi al nostro menu */
+/* Nasconde elementi superflui */
 #MainMenu, footer, header {visibility: hidden !important;}
 
 .block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; align-items: center !important; }
@@ -55,15 +54,18 @@ div[data-testid="stImage"] { width: 100% !important; display: flex !important; j
     margin-bottom: 3px !important; opacity: 0.9; 
 }
 
-/* Menu Fisso Integrato - Allineato a sinistra, senza icone */
+/* Menu Fisso Integrato - Gotico, arancione, distanziato */
 .menu-fisso { 
     position: fixed; bottom: 0; left: 0; width: 100%; 
     background: #1f2124; display: flex; justify-content: flex-start; 
-    gap: 20px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999; 
+    gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999; 
 }
 .menu-btn { 
-    font-family: sans-serif !important; color: #ff9100; font-weight: bold; 
-    text-decoration: none; font-size: 1.0rem; text-transform: uppercase;
+    font-family: 'UnifrakturMaguntia', cursive !important; 
+    color: #ff9100 !important; 
+    font-weight: bold; 
+    text-decoration: none; 
+    font-size: 1.4rem !important; 
 }
 </style>
 """, unsafe_allow_html=True)
@@ -100,7 +102,7 @@ try:
 except Exception:
     pass
 
-# Menu Fisso Integrato (Spostato a sinistra)
+# Menu Fisso Integrato (Gotico e distanziato)
 st.markdown("""
 <div class='menu-fisso'>
     <a href='#' class='menu-btn'>HOME</a>
