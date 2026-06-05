@@ -11,10 +11,11 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 
-/* Nasconde elementi superflui */
+/* Nasconde solo header e footer standard, lasciamo i tasti di sistema liberi 
+   per non sovrapporsi al nostro menu */
 #MainMenu, footer, header {visibility: hidden !important;}
 
-.block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
+.block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; align-items: center !important; }
 
 /* Logo */
 .logo-wrapper { 
@@ -24,7 +25,7 @@ st.markdown("""
 }
 div[data-testid="stImage"] { width: 100% !important; display: flex !important; justify-content: center !important; }
 
-/* Titolo Gotico - SOLO QUI */
+/* Titolo Gotico */
 .titolo-gotico { 
     font-family: 'UnifrakturMaguntia', cursive !important; 
     text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; 
@@ -39,7 +40,7 @@ div[data-testid="stImage"] { width: 100% !important; display: flex !important; j
     margin-top: -5px !important; margin-bottom: 20px !important;
 }
 
-/* Eventi - FONT PULITO (Non gotico) */
+/* Eventi */
 .event-box { 
     background-color: #1f2124; padding: 8px; margin-bottom: 12px; 
     border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; 
@@ -54,9 +55,16 @@ div[data-testid="stImage"] { width: 100% !important; display: flex !important; j
     margin-bottom: 3px !important; opacity: 0.9; 
 }
 
-/* Menu Fisso */
-.menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid #ff9100; z-index: 9999; }
-.menu-btn { font-family: sans-serif !important; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 0.9rem; }
+/* Menu Fisso Integrato - Allineato a sinistra, senza icone */
+.menu-fisso { 
+    position: fixed; bottom: 0; left: 0; width: 100%; 
+    background: #1f2124; display: flex; justify-content: flex-start; 
+    gap: 20px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999; 
+}
+.menu-btn { 
+    font-family: sans-serif !important; color: #ff9100; font-weight: bold; 
+    text-decoration: none; font-size: 1.0rem; text-transform: uppercase;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -92,11 +100,11 @@ try:
 except Exception:
     pass
 
-# Menu Fisso
+# Menu Fisso Integrato (Spostato a sinistra)
 st.markdown("""
 <div class='menu-fisso'>
-    <a href='#' class='menu-btn'>🏠 HOME</a>
-    <a href='#' class='menu-btn'>🏴‍☠️ MC</a>
-    <a href='#' class='menu-btn'>🔑 ADMIN</a>
+    <a href='#' class='menu-btn'>HOME</a>
+    <a href='#' class='menu-btn'>MC</a>
+    <a href='#' class='menu-btn'>ADMIN</a>
 </div>
 """, unsafe_allow_html=True)
