@@ -25,21 +25,30 @@ st.markdown("""
 .event-box h3 { font-family: sans-serif !important; font-size: 1.0rem !important; margin-bottom: 5px !important; text-transform: uppercase; color: #ff9100; }
 .event-box p { font-family: sans-serif !important; font-size: 0.8rem !important; margin-bottom: 10px !important; opacity: 0.9; }
 
-/* Contatore Targhetta - Bordo stretto, font Special Elite */
+/* Forza le colonne sulla stessa riga */
+[data-testid="column"] {
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Contatore Targhetta */
 .contatore-targhetta { 
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #1f2124; 
     color: #ff9100; 
-    padding: 5px 12px; 
+    padding: 0 12px; 
     border-radius: 5px; 
     font-family: 'Special Elite', cursive; 
     font-weight: bold; 
     border: 2px solid #ff9100; 
-    text-align: center;
-    line-height: 25px;
+    height: 38px; /* Stessa altezza del bottone */
+    width: 100%;
 }
 
 /* Bottone */
+div[data-testid="stButton"] { margin: 0 !important; }
 div[data-testid="stButton"] button {
     background-color: #ff9100 !important;
     color: black !important;
@@ -47,7 +56,7 @@ div[data-testid="stButton"] button {
     font-weight: bold !important;
     font-family: 'Special Elite', cursive !important;
     border-radius: 5px !important;
-    height: 38px !important; /* Allineato all'altezza della targhetta */
+    height: 38px !important;
     width: 100%;
 }
 
@@ -82,14 +91,13 @@ try:
         if img_path and os.path.exists(img_path):
             st.image(img_path, use_container_width=True)
         
-        # Layout riga pulsante + targhetta
+        # Colonne con allineamento forzato dal CSS
         col1, col2 = st.columns([0.7, 0.3])
         with col1:
             if st.button("PARTECIPERÒ!", key=f"btn_{i}"):
                 st.session_state.voti[nome] += 1
                 st.rerun()
         with col2:
-            # La targhetta ora avvolge strettamente il contenuto
             st.markdown(f"<div class='contatore-targhetta'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
         
         st.markdown("</div>", unsafe_allow_html=True)
