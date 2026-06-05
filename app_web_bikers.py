@@ -6,26 +6,20 @@ st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
 st.markdown("""
 <style>
+/* --- OPZIONE NUCLEARE PER RIMUOVERE TUTTO --- */
+#MainMenu {visibility: hidden !important;}
+footer {visibility: hidden !important;}
+header {visibility: hidden !important;}
+/* Nasconde il tasto Deploy (corona) e il Menu */
+[data-testid="stToolbar"], [data-testid="stDecoration"], [data-testid="stStatusWidget"], .stAppDeployButton, button[kind="secondary"] {
+    display: none !important;
+}
+/* Forza la rimozione di eventuali contenitori del menu in alto */
+.stAppViewAction {display: none !important;}
+
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
 
 .stApp { background-color: #161719; }
-
-/* NASCONDERE FORZATAMENTE TUTTO IL MENU E I TASTI DI SISTEMA */
-#MainMenu {visibility: hidden !important;}
-header {visibility: hidden !important;}
-footer {visibility: hidden !important;}
-.stDeployButton {display:none !important;}
-div[data-testid="stToolbar"] {display:none !important;}
-div[data-testid="stDecoration"] {display:none !important;}
-div[data-testid="stStatusWidget"] {display:none !important;}
-button[kind="secondary"] {visibility: hidden !important;} /* Attenzione: questo nasconde tutti i bottoni secondari */
-
-/* NOTA BENE: Se i tasti persistono, usiamo il "nuke" totale sui componenti di sistema:
-*/
-.stAppDeployButton, .stAppViewAction {
-    display: none !important;
-    visibility: hidden !important;
-}
 
 .block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
@@ -97,7 +91,6 @@ try:
         if img_path and os.path.exists(img_path):
             st.image(img_path, use_container_width=True)
         
-        # Nota: i bottoni dei singoli eventi sono di tipo "primary" o "secondary"
         if st.button(f"Parteciperò! ({st.session_state.voti[nome]})", key=f"btn_{i}"):
             st.session_state.voti[nome] += 1
             st.rerun()
