@@ -11,10 +11,9 @@ st.markdown("""
 .stApp { background-color: #161719; }
 #MainMenu, footer, header, .stDeployButton { visibility: hidden !important; display: none !important; }
 
-/* Layout principale */
 .block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
-/* Logo - Rimosso il margine negativo eccessivo */
+/* Logo */
 .logo-wrapper { 
     display: flex !important; 
     justify-content: center !important; 
@@ -25,13 +24,13 @@ st.markdown("""
 }
 div[data-testid="stImage"] { width: 100% !important; display: flex !important; justify-content: center !important; }
 
-/* Titolo Gotico - Margine negativo forte per farlo salire verso il logo */
+/* Titolo Gotico */
 .titolo-gotico { 
     font-family: 'UnifrakturMaguntia', cursive !important; 
     text-align: center; 
     color: #ff9100 !important; 
     font-size: 2.6rem !important; 
-    margin-top: -40px !important; /* Questo è il comando che tira la scritta verso l'alto */
+    margin-top: -40px !important; 
     margin-bottom: 0px !important;
     text-shadow: 2px 2px 4px #000;
 }
@@ -46,9 +45,10 @@ div[data-testid="stImage"] { width: 100% !important; display: flex !important; j
     margin-bottom: 20px !important;
 }
 
-.event-box { background-color: #1f2124; padding: 12px; margin-bottom: 15px; border: 3px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
-.event-box h3 { font-size: 1.2rem !important; margin-bottom: 5px !important; }
-.event-box p { font-size: 0.9rem !important; }
+/* Eventi - Font snelliti */
+.event-box { background-color: #1f2124; padding: 10px; margin-bottom: 15px; border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
+.event-box h3 { font-size: 1.0rem !important; margin-bottom: 5px !important; text-transform: uppercase; }
+.event-box p { font-size: 0.85rem !important; margin-bottom: 5px !important; }
 
 .menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid #ff9100; z-index: 9999; }
 .menu-btn { color: #ff9100; font-weight: bold; text-decoration: none; font-size: 0.9rem; }
