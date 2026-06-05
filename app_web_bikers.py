@@ -6,8 +6,9 @@ st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
 st.markdown("""
 <style>
-/* Font Gotico per i titoli */
+/* Importiamo sia il font gotico che quello per il menu */
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
 .stApp { background-color: #161719; }
 
@@ -54,18 +55,18 @@ div[data-testid="stImage"] { width: 100% !important; display: flex !important; j
     margin-bottom: 3px !important; opacity: 0.9; 
 }
 
-/* Menu Fisso Integrato - Gotico, arancione, distanziato */
+/* Menu Fisso - Font Special Elite (Stile Vintage/Officina) */
 .menu-fisso { 
     position: fixed; bottom: 0; left: 0; width: 100%; 
     background: #1f2124; display: flex; justify-content: flex-start; 
     gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999; 
 }
 .menu-btn { 
-    font-family: 'UnifrakturMaguntia', cursive !important; 
+    font-family: 'Special Elite', cursive !important; 
     color: #ff9100 !important; 
     font-weight: bold; 
     text-decoration: none; 
-    font-size: 1.4rem !important; 
+    font-size: 1.2rem !important; 
 }
 </style>
 """, unsafe_allow_html=True)
@@ -102,7 +103,7 @@ try:
 except Exception:
     pass
 
-# Menu Fisso Integrato (Gotico e distanziato)
+# Menu Fisso Integrato (Font Special Elite e distanziato)
 st.markdown("""
 <div class='menu-fisso'>
     <a href='#' class='menu-btn'>HOME</a>
