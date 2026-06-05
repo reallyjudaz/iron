@@ -11,38 +11,38 @@ st.markdown("""
 .stApp { background-color: #161719; }
 #MainMenu, footer, header, .stDeployButton { visibility: hidden !important; display: none !important; }
 
-/* Layout principale - Ridotto padding superiore */
+/* Layout principale */
 .block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
-/* Logo - Margine inferiore ulteriormente compresso */
+/* Logo - Rimosso il margine negativo eccessivo */
 .logo-wrapper { 
     display: flex !important; 
     justify-content: center !important; 
     width: 100vw !important; 
     margin-left: calc(50% - 50vw) !important; 
     margin-right: calc(50% - 50vw) !important; 
-    margin-bottom: -30px !important; /* Tiriamo il logo ancora più giù */
+    margin-bottom: 0px !important; 
 }
 div[data-testid="stImage"] { width: 100% !important; display: flex !important; justify-content: center !important; }
 
-/* Titolo Gotico - Margine superiore negativo per "abbracciare" il logo */
+/* Titolo Gotico - Margine negativo forte per farlo salire verso il logo */
 .titolo-gotico { 
     font-family: 'UnifrakturMaguntia', cursive !important; 
     text-align: center; 
     color: #ff9100 !important; 
     font-size: 2.6rem !important; 
-    margin-top: 0px !important; 
-    margin-bottom: 0px !important; /* Zero spazio sotto il titolo */
+    margin-top: -40px !important; /* Questo è il comando che tira la scritta verso l'alto */
+    margin-bottom: 0px !important;
     text-shadow: 2px 2px 4px #000;
 }
 
-/* Sottotitolo - Zero spazio sopra */
+/* Sottotitolo */
 .sottotitolo {
     font-family: 'UnifrakturMaguntia', cursive !important;
     text-align: center;
     color: #ff9100 !important;
     font-size: 1.4rem !important;
-    margin-top: -5px !important; /* Attacchiamo il sottotitolo al titolo */
+    margin-top: -5px !important; 
     margin-bottom: 20px !important;
 }
 
