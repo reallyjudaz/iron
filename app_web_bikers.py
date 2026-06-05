@@ -4,46 +4,33 @@ import os
 
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
-# --- CSS DEFINITIVO ---
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+/* CSS per forzare la riga compatta */
+.riga-eventi { 
+    display: flex !important; 
+    flex-direction: row !important; 
+    align-items: center !important; 
+    gap: 5px !important; 
+    width: 100% !important; 
+}
+/* Forza i bottoni a stare in riga */
+.riga-eventi > div { flex: 1 !important; min-width: 0 !important; }
 
-.stApp { background-color: #161719; }
-#MainMenu, footer, header {visibility: hidden !important;}
-.block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; }
-
-/* Logo & Titoli */
-.logo-wrapper { display: flex !important; justify-content: center !important; width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-bottom: 0px !important; }
-.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -40px !important; margin-bottom: 0px !important; text-shadow: 2px 2px 4px #000; }
-.sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-top: -5px !important; margin-bottom: 20px !important; }
-
-/* Box Eventi */
+/* Stili specifici */
 .event-box { background-color: #1f2124; padding: 15px; margin-bottom: 15px; border: 2px solid #ff9100; border-radius: 10px; color: white; }
-
-/* Layout della riga forzato */
-.button-row { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; margin-top: 15px !important; }
-
-/* Contatore */
-.contatore { background-color: #1f2124; color: #ff9100; border: 2px solid #ff9100; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-family: 'Special Elite'; text-align: center; }
-
-/* Menu */
-.menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 15px; border-top: 3px solid #ff9100; z-index: 9999; }
+.contatore-box { background-color: #1f2124; color: #ff9100; border: 2px solid #ff9100; border-radius: 5px; padding: 7px; text-align: center; font-weight: bold; font-family: 'Special Elite'; font-size: 0.9rem; }
+div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold !important; border: none !important; width: 100% !important; height: 35px !important; font-size: 0.7rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# Stati
 if 'evento_selezionato' not in st.session_state: st.session_state.evento_selezionato = None
 if 'voti' not in st.session_state: st.session_state.voti = {}
 
-# Logo
+# --- HEADER (Mantieni il tuo originale) ---
 if os.path.exists("logo_custom.png"):
-    st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
-    st.image("logo_custom.png")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
+    st.image("logo_custom.png", use_container_width=True)
+st.markdown("<h1 style='text-align:center; color:#ff9100; font-family:UnifrakturMaguntia;'>Iron & Rubber</h1>", unsafe_allow_html=True)
 
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
@@ -54,39 +41,35 @@ try:
             nome = str(row.get('Nome Evento / Raduno', 'Evento'))
             if nome not in st.session_state.voti: st.session_state.voti[nome] = 0
             
-            # Apertura Box
             st.markdown(f"<div class='event-box'><h3>{nome}</h3><p>📅 {row['Data']} | 📍 {row['Luogo']}</p>", unsafe_allow_html=True)
             
-            # --- RIGA ALLINEATA (INFO - PARTECIPA - CONTATORE) ---
-            # Usiamo colonne ma con un trucco per non farle esplodere
-            c1, c2, c3 = st.columns([1, 1, 0.6])
-            with c1:
-                if st.button("INFO", key=f"info_{i}"):
-                    st.session_state.evento_selezionato = i
-                    st.rerun()
-            with c2:
-                if st.button("PARTECIPA", key=f"part_{i}"):
-                    st.session_state.voti[nome] += 1
-                    st.rerun()
-            with c3:
-                st.markdown(f"<div class='contatore'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
+            # --- BLOCCO COMPATTO SENZA COLONNE STREAMLIT ---
+            st.markdown("<div class='riga-eventi'>", unsafe_allow_html=True)
             
-            st.markdown("</div>", unsafe_allow_html=True)
+            # Usiamo dei form per gestire il click senza rompere il layout
+            if st.button("INFO", key=f"info_{i}"):
+                st.session_state.evento_selezionato = i
+                st.rerun()
+            if st.button("PARTECIPA", key=f"part_{i}"):
+                st.session_state.voti[nome] += 1
+                st.rerun()
+            st.markdown(f"<div class='contatore-box'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
+            
+            st.markdown("</div></div>", unsafe_allow_html=True)
     
     else:
-        # PAGINA DETTAGLIO
+        # DETTAGLIO
         idx = st.session_state.evento_selezionato
         row = df.iloc[idx]
         st.markdown(f"<div class='event-box'><h2>{row['Nome Evento / Raduno']}</h2>", unsafe_allow_html=True)
-        if os.path.exists(str(row.get('Locandina', ''))): st.image(str(row['Locandina']), use_container_width=True)
         st.write(f"📅 Data: {row['Data']} | 📍 Luogo: {row['Luogo']}")
         if st.button("⬅ TORNA"):
             st.session_state.evento_selezionato = None
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-except:
-    st.error("Errore nel file Excel.")
+except Exception:
+    st.write("Carica il file Excel per iniziare.")
 
 # Menu Fisso
-st.markdown("<div class='menu-fisso'>HOME | MC | ADMIN</div>", unsafe_allow_html=True)
+st.markdown("<div class='menu-fisso' style='position:fixed; bottom:0; left:0; width:100%; background:#1f2124; display:flex; justify-content:space-around; padding:15px; border-top:3px solid #ff9100;'>HOME | MC | ADMIN</div>", unsafe_allow_html=True)
