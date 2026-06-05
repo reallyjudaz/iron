@@ -12,49 +12,45 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
+
 .block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; align-items: center !important; }
 
-/* Contenitore riga - Forza la riga singola */
-.row-container { 
-    display: flex !important; 
-    flex-direction: row !important; 
-    align-items: center !important; 
-    justify-content: center !important; 
-    gap: 10px !important; 
-    margin-bottom: 10px !important;
-}
-
-/* Targhetta contatore - Fiamma centrata */
-.contatore-targhetta { 
-    background-color: #1f2124; color: #ff9100; padding: 0 15px; border-radius: 5px; 
-    font-family: 'Special Elite', cursive; font-weight: bold; border: 2px solid #ff9100; 
-    height: 38px; display: flex; align-items: center; justify-content: center;
-    white-space: nowrap; min-width: 60px;
-}
-
-/* Bottone - Tolto flex, forzato inline */
-div[data-testid="stButton"] { margin: 0 !important; display: inline-block !important; }
-div[data-testid="stButton"] button {
-    background-color: #ff9100 !important; color: black !important; border: none !important;
-    font-weight: bold !important; font-family: 'Special Elite', cursive !important;
-    border-radius: 5px !important; height: 38px !important; padding: 0 20px !important;
-    white-space: nowrap;
-}
-
-/* Stili esistenti */
-.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -40px !important; text-shadow: 2px 2px 4px #000; }
+/* Logo & Titoli */
+.logo-wrapper { display: flex !important; justify-content: center !important; width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important; margin-bottom: 0px !important; }
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -40px !important; margin-bottom: 0px !important; text-shadow: 2px 2px 4px #000; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-top: -5px !important; margin-bottom: 20px !important; }
+
+/* Box Eventi */
 .event-box { background-color: #1f2124; padding: 10px; margin-bottom: 12px; border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
+.event-box h3 { font-family: sans-serif !important; font-size: 1.0rem !important; margin-bottom: 5px !important; text-transform: uppercase; color: #ff9100; }
+.event-box p { font-family: sans-serif !important; font-size: 0.8rem !important; margin-bottom: 10px !important; opacity: 0.9; }
+
+/* Contatore Esterno - stile targhetta */
+.contatore-box { background-color: #333; color: #ff9100; padding: 5px; border-radius: 5px; font-family: 'Special Elite', cursive; font-weight: bold; text-align: center; border: 1px solid #ff9100; }
+
+/* Bottone */
+div[data-testid="stButton"] button {
+    background-color: #ff9100 !important;
+    color: black !important;
+    border: none !important;
+    font-weight: bold !important;
+    font-family: 'Special Elite', cursive !important;
+    border-radius: 5px !important;
+    width: 100%;
+}
+
+/* Menu */
 .menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: flex-start; gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999; }
 .menu-btn { font-family: 'Special Elite', cursive !important; color: #ff9100 !important; font-weight: bold; text-decoration: none; font-size: 1.2rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ... [Logo e Titoli restano uguali] ...
+# Logo
 if os.path.exists("logo_custom.png"):
     st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
     st.image("logo_custom.png")
     st.markdown('</div>', unsafe_allow_html=True)
+
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
@@ -69,16 +65,30 @@ try:
         if nome not in st.session_state.voti: st.session_state.voti[nome] = 0
         
         st.markdown(f"<div class='event-box'><h3>{nome}</h3><p>📅 {row['Data']} | 📍 {row['Luogo']}</p>", unsafe_allow_html=True)
-        if str(row.get('Locandina', '')): st.image(str(row['Locandina']), use_container_width=True)
         
-        # Inseriamo entrambi nel contenitore 'row-container'
-        st.markdown("<div class='row-container'>", unsafe_allow_html=True)
-        if st.button("PARTECIPERÒ!", key=f"btn_{i}"):
-            st.session_state.voti[nome] += 1
-            st.rerun()
-        st.markdown(f"<div class='contatore-targhetta'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
-        st.markdown("</div></div>", unsafe_allow_html=True) # Chiude row e event-box
-except Exception: pass
+        img_path = str(row.get('Locandina', ''))
+        if img_path and os.path.exists(img_path):
+            st.image(img_path, use_container_width=True)
+        
+        # Creiamo le colonne: 70% pulsante, 30% contatore
+        col1, col2 = st.columns([0.7, 0.3])
+        
+        with col1:
+            if st.button("PARTECIPERÒ!", key=f"btn_{i}"):
+                st.session_state.voti[nome] += 1
+                st.rerun()
+        with col2:
+            st.markdown(f"<div class='contatore-box'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+except Exception:
+    pass
 
 # Menu
-st.markdown("<div class='menu-fisso'><a href='#' class='menu-btn'>HOME</a><a href='#' class='menu-btn'>MC</a><a href='#' class='menu-btn'>ADMIN</a></div>", unsafe_allow_html=True)
+st.markdown("""
+<div class='menu-fisso'>
+    <a href='#' class='menu-btn'>HOME</a>
+    <a href='#' class='menu-btn'>MC</a>
+    <a href='#' class='menu-btn'>ADMIN</a>
+</div>
+""", unsafe_allow_html=True)
