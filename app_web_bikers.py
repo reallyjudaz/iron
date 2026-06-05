@@ -14,11 +14,18 @@ st.markdown("""
 /* Layout principale */
 .block-container { padding-top: 0.5rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
-/* Logo - Forza il centro con !important */
-.logo-wrapper { display: flex !important; justify-content: center !important; width: 100% !important; margin-bottom: 5px; }
-div[data-testid="stImage"] { display: flex !important; justify-content: center !important; width: 100% !important; }
+/* Logo "Full Width" - Forza l'espansione ai bordi */
+.logo-wrapper { 
+    display: flex !important; 
+    justify-content: center !important; 
+    width: 100vw !important; 
+    margin-left: calc(50% - 50vw) !important; 
+    margin-right: calc(50% - 50vw) !important;
+    margin-bottom: 10px; 
+}
+div[data-testid="stImage"] { width: 100% !important; display: flex !important; justify-content: center !important; }
 
-/* Titolo Gotico */
+/* Titolo Gotico - Compatto */
 .titolo-gotico { 
     font-family: 'UnifrakturMaguntia', cursive !important; 
     text-align: center; 
@@ -29,24 +36,26 @@ div[data-testid="stImage"] { display: flex !important; justify-content: center !
     text-shadow: 2px 2px 4px #000;
 }
 
+/* Eventi */
 .event-box { background-color: #1f2124; padding: 12px; margin-bottom: 15px; border: 3px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
 .event-box h3 { font-size: 1.2rem !important; margin-bottom: 5px !important; }
 .event-box p { font-size: 0.9rem !important; }
 
+/* Menu Fisso */
 .menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid #ff9100; z-index: 9999; }
 .menu-btn { color: #ff9100; font-weight: bold; text-decoration: none; font-size: 0.9rem; }
 </style>
 """, unsafe_allow_html=True)
 
-# Logo
+# Logo (senza larghezza fissa per permettere l'espansione CSS)
 if os.path.exists("logo_custom.png"):
     st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
-    st.image("logo_custom.png", width=280)
+    st.image("logo_custom.png")
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 
-# Eventi
+# Lista Eventi
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
