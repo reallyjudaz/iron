@@ -9,16 +9,16 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
 
 .stApp { background-color: #161719; }
-/* Nasconde icone Streamlit */
 #MainMenu, footer, header, .stDeployButton { visibility: hidden !important; display: none !important; }
 
-/* Layout principale zero-margin */
-.block-container { padding-top: 0.5rem !important; padding-bottom: 5rem !important; }
+/* Layout principale */
+.block-container { padding-top: 0.5rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
-/* Logo in cima */
-.logo-wrapper { display: flex; justify-content: center; margin-bottom: 5px; }
+/* Logo - Forza il centro con !important */
+.logo-wrapper { display: flex !important; justify-content: center !important; width: 100% !important; margin-bottom: 5px; }
+div[data-testid="stImage"] { display: flex !important; justify-content: center !important; width: 100% !important; }
 
-/* Titolo Gotico Rock - Ridimensionato */
+/* Titolo Gotico */
 .titolo-gotico { 
     font-family: 'UnifrakturMaguntia', cursive !important; 
     text-align: center; 
@@ -29,24 +29,21 @@ st.markdown("""
     text-shadow: 2px 2px 4px #000;
 }
 
-/* Box eventi - Font ridotto */
 .event-box { background-color: #1f2124; padding: 12px; margin-bottom: 15px; border: 3px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
 .event-box h3 { font-size: 1.2rem !important; margin-bottom: 5px !important; }
 .event-box p { font-size: 0.9rem !important; }
 
-/* Menu Fisso in basso */
 .menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid #ff9100; z-index: 9999; }
 .menu-btn { color: #ff9100; font-weight: bold; text-decoration: none; font-size: 0.9rem; }
 </style>
 """, unsafe_allow_html=True)
 
-# Logo (Ingrandito a 280px)
+# Logo
 if os.path.exists("logo_custom.png"):
     st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
     st.image("logo_custom.png", width=280)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Titolo Gotico
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 
 # Eventi
@@ -69,11 +66,9 @@ try:
             st.session_state.voti[nome] += 1
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
-
-except Exception as e:
+except Exception:
     pass
 
-# Menu Fisso
 st.markdown("""
 <div class='menu-fisso'>
     <a href='#' class='menu-btn'>🏠 HOME</a>
