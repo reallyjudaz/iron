@@ -4,26 +4,46 @@ import os
 
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
+# --- CSS DEFINITIVO ---
 st.markdown("""
 <style>
-/* CSS per forzare la riga */
-.button-row { display: flex !important; align-items: center !important; gap: 10px !important; margin-top: 10px !important; }
-.button-row > div { flex: 1 !important; } /* Ogni elemento prende spazio uguale */
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
-/* Contatore stile targhetta */
-.contatore-targhetta { background-color: #1f2124; color: #ff9100; border: 2px solid #ff9100; padding: 5px; border-radius: 5px; font-weight: bold; text-align: center; height: 38px; display: flex; align-items: center; justify-content: center; }
+.stApp { background-color: #161719; }
+#MainMenu, footer, header {visibility: hidden !important;}
+.block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; }
 
-/* Bottoni compatti */
-div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold !important; border: none !important; width: 100% !important; height: 38px !important; }
+/* Logo & Titoli */
+.logo-wrapper { display: flex !important; justify-content: center !important; width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-bottom: 0px !important; }
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -40px !important; margin-bottom: 0px !important; text-shadow: 2px 2px 4px #000; }
+.sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-top: -5px !important; margin-bottom: 20px !important; }
 
-/* Il resto del tuo stile */
+/* Box Eventi */
 .event-box { background-color: #1f2124; padding: 15px; margin-bottom: 15px; border: 2px solid #ff9100; border-radius: 10px; color: white; }
+
+/* Layout della riga forzato */
+.button-row { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; margin-top: 15px !important; }
+
+/* Contatore */
+.contatore { background-color: #1f2124; color: #ff9100; border: 2px solid #ff9100; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-family: 'Special Elite'; text-align: center; }
+
+/* Menu */
+.menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 15px; border-top: 3px solid #ff9100; z-index: 9999; }
 </style>
 """, unsafe_allow_html=True)
 
-# Logica di stato
+# Stati
 if 'evento_selezionato' not in st.session_state: st.session_state.evento_selezionato = None
 if 'voti' not in st.session_state: st.session_state.voti = {}
+
+# Logo
+if os.path.exists("logo_custom.png"):
+    st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
+    st.image("logo_custom.png")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
@@ -32,36 +52,41 @@ try:
     if st.session_state.evento_selezionato is None:
         for i, row in df.iterrows():
             nome = str(row.get('Nome Evento / Raduno', 'Evento'))
+            if nome not in st.session_state.voti: st.session_state.voti[nome] = 0
             
+            # Apertura Box
             st.markdown(f"<div class='event-box'><h3>{nome}</h3><p>📅 {row['Data']} | 📍 {row['Luogo']}</p>", unsafe_allow_html=True)
             
-            # --- RIGA FORZATA CON FLEXBOX ---
-            st.markdown("<div class='button-row'>", unsafe_allow_html=True)
-            
-            # Colonna 1: INFO
-            c1, c2, c3 = st.columns(3)
+            # --- RIGA ALLINEATA (INFO - PARTECIPA - CONTATORE) ---
+            # Usiamo colonne ma con un trucco per non farle esplodere
+            c1, c2, c3 = st.columns([1, 1, 0.6])
             with c1:
-                if st.button("INFO", key=f"inf_{i}"):
+                if st.button("INFO", key=f"info_{i}"):
                     st.session_state.evento_selezionato = i
                     st.rerun()
-            # Colonna 2: PARTECIPA
             with c2:
-                if st.button("PARTECIPA", key=f"par_{i}"):
-                    st.session_state.voti[nome] = st.session_state.voti.get(nome, 0) + 1
+                if st.button("PARTECIPA", key=f"part_{i}"):
+                    st.session_state.voti[nome] += 1
                     st.rerun()
-            # Colonna 3: CONTATORE
             with c3:
-                st.markdown(f"<div class='contatore-targhetta'>🔥 {st.session_state.voti.get(nome, 0)}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='contatore'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
             
-            st.markdown("</div></div>", unsafe_allow_html=True) # Chiude button-row e event-box
-            
+            st.markdown("</div>", unsafe_allow_html=True)
+    
     else:
-        # Dettaglio
+        # PAGINA DETTAGLIO
         idx = st.session_state.evento_selezionato
         row = df.iloc[idx]
-        st.write(f"## {row['Nome Evento / Raduno']}")
+        st.markdown(f"<div class='event-box'><h2>{row['Nome Evento / Raduno']}</h2>", unsafe_allow_html=True)
+        if os.path.exists(str(row.get('Locandina', ''))): st.image(str(row['Locandina']), use_container_width=True)
+        st.write(f"📅 Data: {row['Data']} | 📍 Luogo: {row['Luogo']}")
         if st.button("⬅ TORNA"):
             st.session_state.evento_selezionato = None
             st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+
 except:
-    st.error("File non trovato o errore di lettura.")
+    st.error("Errore nel file Excel.")
+
+# Menu Fisso
+st.markdown("<div class='menu-fisso'>HOME | MC | ADMIN</div>", unsafe_allow_html=True)
