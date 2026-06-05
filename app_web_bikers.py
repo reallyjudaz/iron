@@ -11,38 +11,38 @@ st.markdown("""
 .stApp { background-color: #161719; }
 #MainMenu, footer, header, .stDeployButton { visibility: hidden !important; display: none !important; }
 
-/* Layout principale */
-.block-container { padding-top: 0.2rem !important; padding-bottom: 5rem !important; align-items: center !important; }
+/* Layout principale - Ridotto padding superiore */
+.block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
-/* Logo - Margin bottom negativo per avvicinare al titolo */
+/* Logo - Margine inferiore ulteriormente compresso */
 .logo-wrapper { 
     display: flex !important; 
     justify-content: center !important; 
     width: 100vw !important; 
     margin-left: calc(50% - 50vw) !important; 
     margin-right: calc(50% - 50vw) !important; 
-    margin-bottom: -10px !important; 
+    margin-bottom: -30px !important; /* Tiriamo il logo ancora più giù */
 }
 div[data-testid="stImage"] { width: 100% !important; display: flex !important; justify-content: center !important; }
 
-/* Titolo Gotico - Margin top negativo per avvicinare al logo */
+/* Titolo Gotico - Margine superiore negativo per "abbracciare" il logo */
 .titolo-gotico { 
     font-family: 'UnifrakturMaguntia', cursive !important; 
     text-align: center; 
     color: #ff9100 !important; 
     font-size: 2.6rem !important; 
-    margin-top: -10px !important; 
-    margin-bottom: 5px !important;
+    margin-top: 0px !important; 
+    margin-bottom: 0px !important; /* Zero spazio sotto il titolo */
     text-shadow: 2px 2px 4px #000;
 }
 
-/* Sottotitolo */
+/* Sottotitolo - Zero spazio sopra */
 .sottotitolo {
     font-family: 'UnifrakturMaguntia', cursive !important;
     text-align: center;
     color: #ff9100 !important;
     font-size: 1.4rem !important;
-    margin-top: 0px !important;
+    margin-top: -5px !important; /* Attacchiamo il sottotitolo al titolo */
     margin-bottom: 20px !important;
 }
 
