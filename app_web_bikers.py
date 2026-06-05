@@ -12,7 +12,6 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
-
 .block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; align-items: center !important; }
 
 /* Logo & Titoli */
@@ -25,39 +24,21 @@ st.markdown("""
 .event-box h3 { font-family: sans-serif !important; font-size: 1.0rem !important; margin-bottom: 5px !important; text-transform: uppercase; color: #ff9100; }
 .event-box p { font-family: sans-serif !important; font-size: 0.8rem !important; margin-bottom: 10px !important; opacity: 0.9; }
 
-/* Forza le colonne sulla stessa riga */
-[data-testid="column"] {
-    display: flex !important;
-    align-items: center !important;
-}
+/* Contenitore Flex per pulsante e contatore */
+.flex-container { display: flex; gap: 10px; align-items: center; justify-content: center; width: 100%; }
 
-/* Contatore Targhetta */
+/* Targhetta contatore */
 .contatore-targhetta { 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #1f2124; 
-    color: #ff9100; 
-    padding: 0 12px; 
-    border-radius: 5px; 
-    font-family: 'Special Elite', cursive; 
-    font-weight: bold; 
-    border: 2px solid #ff9100; 
-    height: 38px; /* Stessa altezza del bottone */
-    width: 100%;
+    background-color: #1f2124; color: #ff9100; padding: 7px 15px; border-radius: 5px; 
+    font-family: 'Special Elite', cursive; font-weight: bold; border: 2px solid #ff9100; 
+    height: 38px; display: flex; align-items: center; white-space: nowrap;
 }
 
-/* Bottone */
-div[data-testid="stButton"] { margin: 0 !important; }
+/* Bottone (abbiamo rimosso la larghezza 100% per farlo restare compatto) */
 div[data-testid="stButton"] button {
-    background-color: #ff9100 !important;
-    color: black !important;
-    border: none !important;
-    font-weight: bold !important;
-    font-family: 'Special Elite', cursive !important;
-    border-radius: 5px !important;
-    height: 38px !important;
-    width: 100%;
+    background-color: #ff9100 !important; color: black !important; border: none !important;
+    font-weight: bold !important; font-family: 'Special Elite', cursive !important;
+    border-radius: 5px !important; height: 38px !important; padding: 0 20px !important;
 }
 
 /* Menu */
@@ -91,14 +72,21 @@ try:
         if img_path and os.path.exists(img_path):
             st.image(img_path, use_container_width=True)
         
-        # Colonne con allineamento forzato dal CSS
-        col1, col2 = st.columns([0.7, 0.3])
-        with col1:
-            if st.button("PARTECIPERÒ!", key=f"btn_{i}"):
-                st.session_state.voti[nome] += 1
-                st.rerun()
-        with col2:
-            st.markdown(f"<div class='contatore-targhetta'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
+        # Uso di un contenitore markdown per forzare il layout flex
+        st.markdown(f"""
+            <div class='flex-container'>
+                <div style='flex-grow: 1;'>
+        """, unsafe_allow_html=True)
+        
+        if st.button("PARTECIPERÒ!", key=f"btn_{i}"):
+            st.session_state.voti[nome] += 1
+            st.rerun()
+            
+        st.markdown(f"""
+                </div>
+                <div class='contatore-targhetta'>🔥 {st.session_state.voti[nome]}</div>
+            </div>
+        """, unsafe_allow_html=True)
         
         st.markdown("</div>", unsafe_allow_html=True)
 except Exception:
