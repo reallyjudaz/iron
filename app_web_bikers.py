@@ -11,29 +11,39 @@ st.markdown("""
 .stApp { background-color: #161719; }
 #MainMenu, footer, header, .stDeployButton { visibility: hidden !important; display: none !important; }
 
-.block-container { padding-top: 0.5rem !important; padding-bottom: 5rem !important; align-items: center !important; }
+/* Layout principale */
+.block-container { padding-top: 0.2rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
-/* Logo Full Width */
-.logo-wrapper { display: flex !important; justify-content: center !important; width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important; margin-bottom: 5px; }
+/* Logo - Margin bottom negativo per avvicinare al titolo */
+.logo-wrapper { 
+    display: flex !important; 
+    justify-content: center !important; 
+    width: 100vw !important; 
+    margin-left: calc(50% - 50vw) !important; 
+    margin-right: calc(50% - 50vw) !important; 
+    margin-bottom: -10px !important; 
+}
 div[data-testid="stImage"] { width: 100% !important; display: flex !important; justify-content: center !important; }
 
-/* Scritta Principale - Manteniamo il font, ma ridotto per stare su una riga */
+/* Titolo Gotico - Margin top negativo per avvicinare al logo */
 .titolo-gotico { 
     font-family: 'UnifrakturMaguntia', cursive !important; 
     text-align: center; 
     color: #ff9100 !important; 
     font-size: 2.6rem !important; 
-    margin: 0 !important;
+    margin-top: -10px !important; 
+    margin-bottom: 5px !important;
     text-shadow: 2px 2px 4px #000;
 }
 
-/* Sottotitolo Filosofico - Stesso font e colore */
+/* Sottotitolo */
 .sottotitolo {
     font-family: 'UnifrakturMaguntia', cursive !important;
     text-align: center;
     color: #ff9100 !important;
     font-size: 1.4rem !important;
-    margin-bottom: 25px !important;
+    margin-top: 0px !important;
+    margin-bottom: 20px !important;
 }
 
 .event-box { background-color: #1f2124; padding: 12px; margin-bottom: 15px; border: 3px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
