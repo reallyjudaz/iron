@@ -25,8 +25,19 @@ st.markdown("""
 .event-box h3 { font-family: sans-serif !important; font-size: 1.0rem !important; margin-bottom: 5px !important; text-transform: uppercase; color: #ff9100; }
 .event-box p { font-family: sans-serif !important; font-size: 0.8rem !important; margin-bottom: 10px !important; opacity: 0.9; }
 
-/* Contatore Esterno - stile targhetta */
-.contatore-box { background-color: #333; color: #ff9100; padding: 5px; border-radius: 5px; font-family: 'Special Elite', cursive; font-weight: bold; text-align: center; border: 1px solid #ff9100; }
+/* Contatore Targhetta - Bordo stretto, font Special Elite */
+.contatore-targhetta { 
+    display: inline-block;
+    background-color: #1f2124; 
+    color: #ff9100; 
+    padding: 5px 12px; 
+    border-radius: 5px; 
+    font-family: 'Special Elite', cursive; 
+    font-weight: bold; 
+    border: 2px solid #ff9100; 
+    text-align: center;
+    line-height: 25px;
+}
 
 /* Bottone */
 div[data-testid="stButton"] button {
@@ -36,6 +47,7 @@ div[data-testid="stButton"] button {
     font-weight: bold !important;
     font-family: 'Special Elite', cursive !important;
     border-radius: 5px !important;
+    height: 38px !important; /* Allineato all'altezza della targhetta */
     width: 100%;
 }
 
@@ -70,15 +82,15 @@ try:
         if img_path and os.path.exists(img_path):
             st.image(img_path, use_container_width=True)
         
-        # Creiamo le colonne: 70% pulsante, 30% contatore
+        # Layout riga pulsante + targhetta
         col1, col2 = st.columns([0.7, 0.3])
-        
         with col1:
             if st.button("PARTECIPERÒ!", key=f"btn_{i}"):
                 st.session_state.voti[nome] += 1
                 st.rerun()
         with col2:
-            st.markdown(f"<div class='contatore-box'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
+            # La targhetta ora avvolge strettamente il contenuto
+            st.markdown(f"<div class='contatore-targhetta'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
         
         st.markdown("</div>", unsafe_allow_html=True)
 except Exception:
