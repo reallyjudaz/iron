@@ -25,8 +25,10 @@ st.markdown("""
 .event-box h3 { font-family: sans-serif !important; font-size: 1.0rem !important; margin-bottom: 5px !important; text-transform: uppercase; color: #ff9100; }
 .event-box p { font-family: sans-serif !important; font-size: 0.8rem !important; margin-bottom: 10px !important; opacity: 0.9; }
 
-/* Stile Personalizzato Bottone - lo rendiamo più integrato */
-div[data-testid="stButton"] { display: flex; justify-content: center; }
+/* Contatore Esterno - stile targhetta */
+.contatore-box { background-color: #333; color: #ff9100; padding: 5px; border-radius: 5px; font-family: 'Special Elite', cursive; font-weight: bold; text-align: center; border: 1px solid #ff9100; }
+
+/* Bottone */
 div[data-testid="stButton"] button {
     background-color: #ff9100 !important;
     color: black !important;
@@ -34,7 +36,7 @@ div[data-testid="stButton"] button {
     font-weight: bold !important;
     font-family: 'Special Elite', cursive !important;
     border-radius: 5px !important;
-    padding: 5px 15px !important;
+    width: 100%;
 }
 
 /* Menu */
@@ -68,10 +70,16 @@ try:
         if img_path and os.path.exists(img_path):
             st.image(img_path, use_container_width=True)
         
-        # Bottone con contatore e fiamma (usiamo markdown per il contatore custom)
-        if st.button(f"PARTECIPERÒ! 🔥 {st.session_state.voti[nome]}", key=f"btn_{i}"):
-            st.session_state.voti[nome] += 1
-            st.rerun()
+        # Creiamo le colonne: 70% pulsante, 30% contatore
+        col1, col2 = st.columns([0.7, 0.3])
+        
+        with col1:
+            if st.button("PARTECIPERÒ!", key=f"btn_{i}"):
+                st.session_state.voti[nome] += 1
+                st.rerun()
+        with col2:
+            st.markdown(f"<div class='contatore-box'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
+        
         st.markdown("</div>", unsafe_allow_html=True)
 except Exception:
     pass
