@@ -6,20 +6,20 @@ st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
 st.markdown("""
 <style>
-/* --- OPZIONE NUCLEARE PER RIMUOVERE TUTTO --- */
-#MainMenu {visibility: hidden !important;}
-footer {visibility: hidden !important;}
-header {visibility: hidden !important;}
-/* Nasconde il tasto Deploy (corona) e il Menu */
-[data-testid="stToolbar"], [data-testid="stDecoration"], [data-testid="stStatusWidget"], .stAppDeployButton, button[kind="secondary"] {
-    display: none !important;
-}
-/* Forza la rimozione di eventuali contenitori del menu in alto */
-.stAppViewAction {display: none !important;}
-
+/* Ripristino font corretto */
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
 
 .stApp { background-color: #161719; }
+
+/* Rimosso il codice aggressivo che ha cambiato il font */
+#MainMenu {visibility: hidden !important;}
+footer {visibility: hidden !important;}
+header {visibility: hidden !important;}
+
+/* Tecnica specifica per nascondere i tasti flottanti di sistema */
+[data-testid="stToolbar"], [data-testid="stDecoration"], .stAppDeployButton {
+    display: none !important;
+}
 
 .block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
@@ -57,7 +57,7 @@ div[data-testid="stImage"] { width: 100% !important; display: flex !important; j
 
 /* Eventi */
 .event-box { background-color: #1f2124; padding: 8px; margin-bottom: 12px; border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
-.event-box h3 { font-size: 0.9rem !important; margin-bottom: 3px !important; text-transform: uppercase; }
+.event-box h3 { font-family: 'UnifrakturMaguntia', cursive !important; font-size: 1.1rem !important; margin-bottom: 3px !important; text-transform: uppercase; }
 .event-box p { font-size: 0.75rem !important; margin-bottom: 3px !important; opacity: 0.9; }
 
 /* Menu Fisso */
