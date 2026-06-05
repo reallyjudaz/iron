@@ -9,7 +9,12 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
 
 .stApp { background-color: #161719; }
-#MainMenu, footer, header, .stDeployButton { visibility: hidden !important; display: none !important; }
+
+/* NASCONDE TUTTI I TASTI DI STREAMLIT */
+#MainMenu, footer, header, .stDeployButton, [data-testid="stToolbar"], [data-testid="stDecoration"], [data-testid="stStatusWidget"], .stAppDeployButton { 
+    visibility: hidden !important; 
+    display: none !important; 
+}
 
 .block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
@@ -45,11 +50,12 @@ div[data-testid="stImage"] { width: 100% !important; display: flex !important; j
     margin-bottom: 20px !important;
 }
 
-/* Eventi - Testo ulteriormente ridotto */
+/* Eventi - Testo ridotto e minimalista */
 .event-box { background-color: #1f2124; padding: 8px; margin-bottom: 12px; border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
 .event-box h3 { font-size: 0.9rem !important; margin-bottom: 3px !important; text-transform: uppercase; }
 .event-box p { font-size: 0.75rem !important; margin-bottom: 3px !important; opacity: 0.9; }
 
+/* Menu Fisso */
 .menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid #ff9100; z-index: 9999; }
 .menu-btn { color: #ff9100; font-weight: bold; text-decoration: none; font-size: 0.9rem; }
 </style>
