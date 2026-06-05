@@ -6,63 +6,57 @@ st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
 st.markdown("""
 <style>
-/* Ripristino font corretto */
+/* Font Gotico per i titoli */
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
 
 .stApp { background-color: #161719; }
 
-/* Rimosso il codice aggressivo che ha cambiato il font */
-#MainMenu {visibility: hidden !important;}
-footer {visibility: hidden !important;}
-header {visibility: hidden !important;}
-
-/* Tecnica specifica per nascondere i tasti flottanti di sistema */
-[data-testid="stToolbar"], [data-testid="stDecoration"], .stAppDeployButton {
-    display: none !important;
-}
+/* Nasconde elementi superflui */
+#MainMenu, footer, header {visibility: hidden !important;}
 
 .block-container { padding-top: 0rem !important; padding-bottom: 5rem !important; align-items: center !important; }
 
 /* Logo */
 .logo-wrapper { 
-    display: flex !important; 
-    justify-content: center !important; 
-    width: 100vw !important; 
-    margin-left: calc(50% - 50vw) !important; 
-    margin-right: calc(50% - 50vw) !important; 
+    display: flex !important; justify-content: center !important; width: 100vw !important; 
+    margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important; 
     margin-bottom: 0px !important; 
 }
 div[data-testid="stImage"] { width: 100% !important; display: flex !important; justify-content: center !important; }
 
-/* Titolo Gotico */
+/* Titolo Gotico - SOLO QUI */
 .titolo-gotico { 
     font-family: 'UnifrakturMaguntia', cursive !important; 
-    text-align: center; 
-    color: #ff9100 !important; 
-    font-size: 2.6rem !important; 
-    margin-top: -40px !important; 
-    margin-bottom: 0px !important;
+    text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; 
+    margin-top: -40px !important; margin-bottom: 0px !important;
     text-shadow: 2px 2px 4px #000;
 }
 
-/* Sottotitolo */
+/* Sottotitolo Gotico */
 .sottotitolo {
     font-family: 'UnifrakturMaguntia', cursive !important;
-    text-align: center;
-    color: #ff9100 !important;
-    font-size: 1.4rem !important;
-    margin-top: -5px !important; 
-    margin-bottom: 20px !important;
+    text-align: center; color: #ff9100 !important; font-size: 1.4rem !important;
+    margin-top: -5px !important; margin-bottom: 20px !important;
 }
 
-/* Eventi */
-.event-box { background-color: #1f2124; padding: 8px; margin-bottom: 12px; border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; }
-.event-box h3 { font-family: 'UnifrakturMaguntia', cursive !important; font-size: 1.1rem !important; margin-bottom: 3px !important; text-transform: uppercase; }
-.event-box p { font-size: 0.75rem !important; margin-bottom: 3px !important; opacity: 0.9; }
+/* Eventi - FONT PULITO (Non gotico) */
+.event-box { 
+    background-color: #1f2124; padding: 8px; margin-bottom: 12px; 
+    border: 2px solid #ff9100; border-radius: 10px; color: white; text-align: center; 
+    font-family: sans-serif !important; 
+}
+.event-box h3 { 
+    font-family: sans-serif !important; font-size: 0.9rem !important; 
+    margin-bottom: 3px !important; text-transform: uppercase; color: #ff9100;
+}
+.event-box p { 
+    font-family: sans-serif !important; font-size: 0.75rem !important; 
+    margin-bottom: 3px !important; opacity: 0.9; 
+}
 
 /* Menu Fisso */
 .menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 10px; border-top: 3px solid #ff9100; z-index: 9999; }
-.menu-btn { color: #ff9100; font-weight: bold; text-decoration: none; font-size: 0.9rem; }
+.menu-btn { font-family: sans-serif !important; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 0.9rem; }
 </style>
 """, unsafe_allow_html=True)
 
