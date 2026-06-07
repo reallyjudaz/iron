@@ -21,9 +21,9 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
 .stApp { background-color: #161719; }
-#MainMenu, header {visibility: hidden !important;}
+#MainMenu, footer, header {visibility: hidden !important;}
 
-/* Questo padding-bottom spinge il contenuto in alto, liberando spazio in fondo per il menu */
+/* Spazio necessario in fondo alla pagina per il menu */
 .block-container { padding-top: 0rem !important; padding-bottom: 250px !important; }
 
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
@@ -38,6 +38,9 @@ div[data-testid="stButton"] button {
     background-color: #ff9100 !important; color: black !important; font-weight: bold !important; 
     font-family: 'Special Elite', cursive !important; border-radius: 5px !important; height: 38px !important; width: 100%; 
 }
+
+/* Forza la toolbar di Streamlit a non interferire */
+div[data-testid="stToolbar"] { pointer-events: none !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -79,11 +82,15 @@ try:
 except Exception:
     st.error("Errore nel caricamento del file.")
 
-# --- MENU FISSO (Z-index estremo per stare davanti a tutto) ---
+# --- MENU FISSO DEFINITIVO ---
 st.markdown("""
-<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 25px 0; border-top: 3px solid #ff9100; display: flex; justify-content: space-around; z-index: 999999; box-shadow: 0px -5px 15px rgba(0,0,0,0.8);'>
-    <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem;'>HOME</b>
-    <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem;'>MC</b>
-    <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem;'>ADMIN</b>
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background-color: #1f2124; border-top: 3px solid #ff9100; display: flex; justify-content: center; align-items: center; z-index: 999999; box-shadow: 0px -5px 15px rgba(0,0,0,0.8);'>
+    
+    <div style='display: flex; gap: 40px;'>
+        <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem; cursor: pointer;'>HOME</b>
+        <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem; cursor: pointer;'>MC</b>
+        <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem; cursor: pointer;'>ADMIN</b>
+    </div>
+    
 </div>
 """, unsafe_allow_html=True)
