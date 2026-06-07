@@ -51,15 +51,6 @@ if os.path.exists("logo_custom.png"):
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
-# --- AGGIUNGI EVENTO (Modulo in cima) ---
-with st.expander("➕ AGGIUNGI NUOVO EVENTO"):
-    with st.form("form_aggiungi", clear_on_submit=True):
-        new_nome = st.text_input("Nome Evento")
-        new_data = st.text_input("Data (es. 15/07/2026)")
-        new_luogo = st.text_input("Luogo")
-        if st.form_submit_button("SALVA EVENTO"):
-            st.success("Evento aggiunto! (Aggiorna il file Excel)")
-
 # --- LISTA EVENTI ---
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
@@ -72,25 +63,25 @@ try:
         except:
             conteggio = 0
             
-        # Trasformazione in Menu a Tendina (Expander)
-        with st.expander(f"{nome}"):
-            st.markdown(f"<div class='event-box'><h3>{nome}</h3><p>📅 {row['Data']} | 📍 {row['Luogo']}</p>", unsafe_allow_html=True)
+        st.markdown(f"<div class='event-box'><h3>{nome}</h3><p>📅 {row['Data']} | 📍 {row['Luogo']}</p>", unsafe_allow_html=True)
+        
+        img_path = str(row.get('Locandina', ''))
+        if img_path and os.path.exists(img_path):
+            st.image(img_path, use_container_width=True)
             
-            img_path = str(row.get('Locandina', ''))
-            if img_path and os.path.exists(img_path):
-                st.image(img_path, use_container_width=True)
-                
-            label = f"CI VADO 🔥 {conteggio}"
-            
-            if ha_gia_votato(i):
-                st.button(label, key=f"btn_{i}", disabled=True)
-            else:
-                if st.button(label, key=f"btn_{i}"):
-                    df.at[i, 'Partecipanti'] = conteggio + 1
-                    df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
-                    registra_voto(i)
-                    st.rerun()
-            st.markdown("</div>", unsafe_allow_html=True)
+        label = f"CI VADO 🔥 {conteggio}"
+        
+        # LOGICA BOTTONE PERMANENTE
+        if ha_gia_votato(i):
+            st.button(label, key=f"btn_{i}", disabled=True)
+        else:
+            if st.button(label, key=f"btn_{i}"):
+                df.at[i, 'Partecipanti'] = conteggio + 1
+                df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
+                registra_voto(i)
+                st.rerun()
+        
+        st.markdown("</div>", unsafe_allow_html=True)
 
 except Exception as e:
     st.error(f"Errore: {e}. Assicurati che il file Excel sia chiuso.")
