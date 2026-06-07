@@ -14,67 +14,76 @@ def ha_gia_votato(id_evento):
     with open("voti_fatti.txt", "r") as f:
         return str(id_evento) in f.read().splitlines()
 
-# --- GESTIONE SESSIONE ADMIN ---
-if "admin_logged_in" not in st.session_state:
-    st.session_state.admin_logged_in = False
-
-# --- CSS (Stile pulito) ---
+# --- CSS INTEGRATO ---
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
 .stApp { background-color: #161719; }
-.titolo-gotico { font-family: 'serif'; text-align: center; color: #ff9100; font-size: 2.6rem; }
+#MainMenu, footer, header {visibility: hidden !important;}
+
+/* Spazio extra in basso per non far coprire l'ultimo evento dal menu fisso  */
+.block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
+
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
+.sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
+
+/* Stile Expander [cite: 17, 18] */
+.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
+.streamlit-expanderHeader { color: #ff9100 !important; font-weight: bold !important; font-size: 1.0rem !important; }
+
+/* Bottoni [cite: 20, 21] */
+div[data-testid="stButton"] button { 
+    background-color: #ff9100 !important; color: black !important; font-weight: bold !important;
+    font-family: 'Special Elite', cursive !important; border-radius: 5px !important; height: 38px !important; width: 100%; 
+}
 </style>
 """, unsafe_allow_html=True)
 
-# --- MENU LATERALE (Sidebar: Il posto più sicuro) ---
-with st.sidebar:
-    st.markdown("## MENU")
-    if st.button("🏠 HOME"): st.rerun()
-    st.button("🏍️ MC")
-    st.divider()
-    
-    # Login Admin nella sidebar
-    if not st.session_state.admin_logged_in:
-        if st.button("🔑 LOGIN ADMIN"):
-            st.session_state.show_login = True
-        if st.session_state.get("show_login", False):
-            pwd = st.text_input("Password", type="password")
-            if pwd == "Judaz2026":
-                st.session_state.admin_logged_in = True
-                st.rerun()
-    else:
-        st.success("Admin attivo")
-        if st.button("🚪 LOGOUT ADMIN"):
-            st.session_state.admin_logged_in = False
-            st.rerun()
-
-# --- PAGINA PRINCIPALE ---
+# --- LOGO E TITOLI ---
 if os.path.exists("logo_custom.png"):
     st.image("logo_custom.png", use_container_width=True)
 
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
-# --- LISTA EVENTI ---
+# --- LISTA EVENTI (Logica Funzionante) ---
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
 
     for i, row in df.iterrows():
+        # Expander come da Codice 3 [cite: 22, 23]
         with st.expander(f"{row['Data']} - {row['Nome Evento / Raduno']}"):
-            st.write(f"📍 {row['Luogo']}")
+            st.write(f"📅 **Data:** {row['Data']}")
+            st.write(f"📍 **Luogo:** {row['Luogo']}")
+            st.write(f"📝 **Note:** {row.get('Dettagli / Note', 'Nessuna nota.')}")
             
-            if st.session_state.admin_logged_in:
-                if st.button(f"🗑️ ELIMINA", key=f"del_{i}"):
-                    df = df.drop(i)
-                    df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
-                    st.rerun()
+            img_path = str(row.get('Locandina', ''))
+            if img_path and os.path.exists(img_path):
+                st.image(img_path, use_container_width=True)
 
+        # Bottone Voto [cite: 24]
         conteggio = int(row.get('Partecipanti', 0))
-        if st.button(f"CI VADO 🔥 {conteggio}", key=f"btn_{i}", disabled=ha_gia_votato(i)):
-            df.at[i, 'Partecipanti'] = conteggio + 1
-            df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
-            registra_voto(i)
-            st.rerun()
+        label = f"CI VADO 🔥 {conteggio}"
+        if ha_gia_votato(i):
+            st.button(label, key=f"btn_{i}", disabled=True)
+        else:
+            if st.button(label, key=f"btn_{i}"):
+                df.at[i, 'Partecipanti'] = conteggio + 1
+                df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
+                registra_voto(i)
+                st.rerun()
 
 except Exception:
-    st.error("Errore file.")
+    st.error("Errore caricamento file.")
+
+# --- MENU FISSO (Preso dal Codice 2)  ---
+st.markdown("""
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: flex-start; gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999;'>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>HOME</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>MC</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>ADMIN</a>
+</div>
+""", unsafe_allow_html=True)
