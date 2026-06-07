@@ -1,34 +1,52 @@
-# --- MENU FISSO CON POPOVER (Aggiungi Evento) ---
+import streamlit as st
+import pandas as pd
+import os
+
+st.set_page_config(page_title="Iron & Rubber", layout="centered")
+
+# --- CSS SEMPLIFICATO ---
 st.markdown("""
 <style>
-/* Stile per rendere il popover coerente con la tua grafica */
-[data-testid="stPopover"] {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #1f2124;
-    border-top: 3px solid #ff9100;
-    z-index: 999999;
-}
+.stApp { background-color: #161719; }
+#MainMenu, footer, header {visibility: hidden !important;}
+.block-container { padding-top: 0rem !important; padding-bottom: 100px !important; }
+
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; color: #ff9100 !important; font-size: 2.6rem !important; }
+.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
+div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold !important; width: 100%; }
 </style>
 """, unsafe_allow_html=True)
 
-# Creiamo un contenitore fisso per il menu
-with st.container():
-    st.markdown("<div style='height: 70px;'></div>", unsafe_allow_html=True) # Spazio vuoto per non coprire gli ultimi elementi
+# --- CONTENUTO ---
+if os.path.exists("logo_custom.png"):
+    st.image("logo_custom.png", width=200)
 
-# Inseriamo il popover nel menu fisso
-with st.popover("➕ AGGIUNGI EVENTO", use_container_width=True):
-    st.subheader("Nuovo Raduno")
-    with st.form("form_aggiungi", clear_on_submit=True):
-        nuovo_nome = st.text_input("Nome Evento")
-        nuova_data = st.date_input("Data")
-        nuovo_luogo = st.text_input("Luogo")
-        nuove_note = st.text_area("Note")
-        locandina = st.file_uploader("Carica Locandina (JPG/PNG)", type=['jpg', 'png'])
+st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
+
+# --- LISTA EVENTI ---
+try:
+    df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
+    for i, row in df.iterrows():
+        with st.expander(f"{row['Data']} - {row['Nome Evento / Raduno']}"):
+            st.write(f"📍 {row['Luogo']}")
+            if os.path.exists(str(row.get('Locandina', ''))):
+                st.image(str(row['Locandina']), use_container_width=True)
         
-        if st.form_submit_button("Salva Evento"):
-            # Qui creeremo la logica per salvare i dati nel file Excel
-            st.success(f"Evento {nuovo_nome} aggiunto!")
-            # Inseriremo qui il codice per aggiornare il dataframe
+        if st.button(f"CI VADO 🔥 {int(row.get('Partecipanti', 0))}", key=f"btn_{i}"):
+            df.at[i, 'Partecipanti'] = int(row.get('Partecipanti', 0)) + 1
+            df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
+            st.rerun()
+except:
+    st.error("Errore nel file Excel.")
+
+# --- MENU IN BASSO (Metodo stabile senza errori) ---
+st.markdown("---")
+with st.container():
+    # Usiamo un expander invece del popover per evitare l'errore in rosa
+    with st.expander("➕ AGGIUNGI NUOVO EVENTO"):
+        with st.form("form_nuovo", clear_on_submit=True):
+            n = st.text_input("Nome Evento")
+            d = st.date_input("Data")
+            l = st.text_input("Luogo")
+            if st.form_submit_button("SALVA EVENTO"):
+                st.success(f"Evento {n} aggiunto!")
