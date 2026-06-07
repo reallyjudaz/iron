@@ -4,73 +4,71 @@ import os
 
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
-# --- FUNZIONI PER MEMORIA PERMANENTE ---
-def registra_voto(id_evento):
-    with open("voti_fatti.txt", "a") as f:
-        f.write(f"{id_evento}\n")
-
-def ha_gia_votato(id_evento):
-    if not os.path.exists("voti_fatti.txt"): return False
-    with open("voti_fatti.txt", "r") as f:
-        voti = f.read().splitlines()
-        return str(id_evento) in voti
-
 # --- CSS E STILE ---
 st.markdown("""
 <style>
 .stApp { background-color: #161719; }
-#MainMenu, footer, header {visibility: hidden !important; }
-.block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; }
-.event-box { background-color: #1f2124; padding: 15px; margin-bottom: 12px; border: 2px solid #ff9100; border-radius: 10px; color: white; }
-.event-box h3 { color: #ff9100; font-family: sans-serif; font-size: 1.1rem; margin-bottom: 5px; }
-div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold !important; border-radius: 5px !important; height: 38px !important; width: 100%; }
-/* Stile expander */
-.streamlit-expanderHeader { background-color: #2a2d32 !important; border: 1px solid #ff9100 !important; border-radius: 5px !important; color: #ff9100 !important; }
+#MainMenu, header {visibility: hidden !important;}
+/* Spazio extra sotto per evitare che il menu sia coperto dai tasti nativi */
+.block-container { padding-bottom: 120px !important; }
+
+.event-box { background-color: #1f2124; padding: 15px; margin-bottom: 15px; border: 2px solid #ff9100; border-radius: 10px; color: white; }
+.dettaglio-box { background-color: #1f2124; padding: 20px; border: 3px solid #ff9100; border-radius: 15px; color: white; margin-bottom: 20px; }
+
+/* Tasti stile Iron & Rubber */
+div[data-testid="stButton"] button { 
+    background-color: #ff9100 !important; color: black !important; font-weight: bold !important; 
+    border-radius: 5px !important; border: none !important; width: 100%; height: 40px; 
+}
 </style>
 """, unsafe_allow_html=True)
 
-# --- LOGO E TITOLI ---
-if os.path.exists("logo_custom.png"):
-    st.image("logo_custom.png", use_container_width=True)
+# --- STATO ---
+if 'dettaglio_id' not in st.session_state: st.session_state.dettaglio_id = None
 
-st.markdown("<h1 style='text-align:center; color:#ff9100;'>Iron & Rubber</h1>", unsafe_allow_html=True)
-
-# --- LISTA EVENTI CON EXPANDER ---
+# --- CARICAMENTO ---
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
+except:
+    df = pd.DataFrame()
 
-    for i, row in df.iterrows():
-        nome = str(row.get('Nome Evento / Raduno', 'Evento'))
-        
-        # Usiamo l'expander per aprire/chiudere il dettaglio dentro il quadrato
-        with st.expander(f"📌 {nome}"):
-            st.write(f"📅 **Data:** {row['Data']}")
-            st.write(f"📍 **Luogo:** {row['Luogo']}")
-            st.write(f"📝 **Note:** {row.get('Dettagli / Note', 'Nessuna nota.')}")
+# --- LOGICA ---
+if not df.empty:
+    if st.session_state.dettaglio_id is None:
+        # LISTA
+        for i, row in df.iterrows():
+            st.markdown(f"<div class='event-box'>", unsafe_allow_html=True)
+            st.subheader(row['Nome Evento / Raduno'])
+            st.write(f"📅 {row['Data']} | 📍 {row['Luogo']}")
             
-            img_path = str(row.get('Locandina', ''))
-            if img_path and os.path.exists(img_path):
-                st.image(img_path, use_container_width=True)
-
-        # Logica Voto (fuori dall'expander)
-        conteggio = int(row.get('Partecipanti', 0))
-        label = f"CI VADO 🔥 {conteggio}"
-        if ha_gia_votato(i):
-            st.button(label, key=f"btn_{i}", disabled=True)
-        else:
-            if st.button(label, key=f"btn_{i}"):
-                df.at[i, 'Partecipanti'] = conteggio + 1
-                df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
-                registra_voto(i)
+            if st.button("VEDI DETTAGLI", key=f"btn_{i}"):
+                st.session_state.dettaglio_id = i
                 st.rerun()
+            st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        # DETTAGLIO
+        i = st.session_state.dettaglio_id
+        row = df.iloc[i]
+        st.markdown(f"<div class='dettaglio-box'>", unsafe_allow_html=True)
+        st.subheader(row['Nome Evento / Raduno'])
+        st.write(f"📅 **Data:** {row['Data']}")
+        st.write(f"📍 **Luogo:** {row['Luogo']}")
+        st.write(f"📝 **Note:** {row.get('Dettagli / Note', 'Nessuna nota.')}")
+        
+        img = str(row.get('Locandina', ''))
+        if img and os.path.exists(img): st.image(img, use_container_width=True)
+        
+        if st.button("⬅ TORNA ALLA LISTA"):
+            st.session_state.dettaglio_id = None
+            st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
 
-except Exception as e:
-    st.error("Carica il file Excel per iniziare.")
-
-# --- MENU ---
+# --- MENU FISSO ---
 st.markdown("""
-<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: space-around; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999;'>
-    <b style='color:#ff9100;'>HOME</b><b style='color:#ff9100;'>MC</b><b style='color:#ff9100;'>ADMIN</b>
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 15px 0; border-top: 3px solid #ff9100; display: flex; justify-content: space-evenly; z-index: 9999;'>
+    <span style='color:#ff9100; font-weight:bold;'>HOME</span>
+    <span style='color:#ff9100; font-weight:bold;'>MC</span>
+    <span style='color:#ff9100; font-weight:bold;'>ADMIN</span>
 </div>
 """, unsafe_allow_html=True)
