@@ -24,30 +24,25 @@ st.markdown("""
 .event-box h3 { font-family: sans-serif !important; font-size: 1.0rem !important; margin-bottom: 5px !important; text-transform: uppercase; color: #ff9100; }
 .event-box p { font-family: sans-serif !important; font-size: 0.8rem !important; margin-bottom: 10px !important; opacity: 0.9; }
 
-/* Contatore Targhetta */
-.contatore-targhetta { 
-    display: inline-block; background-color: #1f2124; color: #ff9100; padding: 5px 12px; 
-    border-radius: 5px; font-family: 'Special Elite', cursive; font-weight: bold; 
-    border: 2px solid #ff9100; text-align: center; line-height: 25px; width: 100%;
-}
-
-/* Bottoni */
+/* Bottone Integrato */
 div[data-testid="stButton"] button {
-    background-color: #ff9100 !important; color: black !important; border: none !important; 
-    font-weight: bold !important; font-family: 'Special Elite', cursive !important; 
-    border-radius: 5px !important; height: 38px !important; width: 100%;
+    background-color: #ff9100 !important;
+    color: black !important;
+    border: none !important;
+    font-weight: bold !important;
+    font-family: 'Special Elite', cursive !important;
+    border-radius: 5px !important;
+    height: 38px !important; 
+    width: 100%;
 }
 
 /* Menu */
 .menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: flex-start; gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999; }
 .menu-btn { font-family: 'Special Elite', cursive !important; color: #ff9100 !important; font-weight: bold; text-decoration: none; font-size: 1.2rem !important; }
-
-/* Tabella forzata */
-.table-container { display: table; width: 100%; table-layout: fixed; border-spacing: 5px; }
-.table-cell { display: table-cell; vertical-align: middle; }
 </style>
 """, unsafe_allow_html=True)
 
+# Logo
 if os.path.exists("logo_custom.png"):
     st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
     st.image("logo_custom.png")
@@ -56,6 +51,7 @@ if os.path.exists("logo_custom.png"):
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
+# Lista Eventi
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
@@ -71,35 +67,16 @@ try:
         if img_path and os.path.exists(img_path):
             st.image(img_path, use_container_width=True)
         
-        # --- TABELLA HTML FORZATA PER MANTENERE LA RIGA ---
-        st.markdown("<div class='table-container'>", unsafe_allow_html=True)
-        
-        # Riga della tabella
-        st.markdown("<div style='display: table-row;'>", unsafe_allow_html=True)
-        
-        # Cella 1 (Info)
-        st.markdown("<div class='table-cell'>", unsafe_allow_html=True)
-        if st.button("INFO", key=f"info_{i}"):
-            st.session_state.evento_selezionato = i
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        # Cella 2 (Partecipa)
-        st.markdown("<div class='table-cell'>", unsafe_allow_html=True)
-        if st.button("PARTECIPA", key=f"btn_{i}"):
+        # Bottone Unico (Testo + Numero)
+        if st.button(f"CI VADO {st.session_state.voti[nome]}", key=f"btn_{i}"):
             st.session_state.voti[nome] += 1
             st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
         
-        # Cella 3 (Contatore)
-        st.markdown("<div class='table-cell'>", unsafe_allow_html=True)
-        st.markdown(f"<div class='contatore-targhetta'>🔥 {st.session_state.voti[nome]}</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
-        
-        st.markdown("</div></div>", unsafe_allow_html=True) # Chiude tabella
-        st.markdown("</div>", unsafe_allow_html=True) # Chiude event-box
 except Exception:
     pass
 
+# Menu
 st.markdown("""
 <div class='menu-fisso'>
     <a href='#' class='menu-btn'>HOME</a>
