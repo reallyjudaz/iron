@@ -11,19 +11,26 @@ def ha_gia_votato(id_evento):
     if not os.path.exists("voti_fatti.txt"): return False
     with open("voti_fatti.txt", "r") as f: return str(id_evento) in f.read().splitlines()
 
-# --- CSS (Grafica pulita) ---
+# --- CSS (Grafica pulita e stili gotici) ---
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
 .stApp { background-color: #161719; }
-.titolo-gotico { font-family: 'serif'; text-align: center; color: #ff9100; font-size: 2.6rem; }
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; }
+.sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; }
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; color: white !important; }
 div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold; }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("Iron & Rubber")
+# --- LOGO E TITOLI ---
+if os.path.exists("logo_custom.png"):
+    st.image("logo_custom.png", use_container_width=True)
 
-# 1. FORM AGGIUNGI (In alto, pulito)
+st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
+
+# 1. FORM AGGIUNGI
 with st.expander("➕ AGGIUNGI EVENTO"):
     with st.form("add_form", clear_on_submit=True):
         n = st.text_input("Nome")
@@ -49,8 +56,8 @@ for idx, row in df.iterrows():
         st.write(f"📝 {row.get('Dettagli / Note', 'Nessuna info')}")
         if os.path.exists(str(row.get('Locandina', ''))): st.image(row['Locandina'])
         
-        # Area Modifica (Solo se hai la password)
-        pwd = st.text_input("Inserisci password per modificare", type="password", key=f"p_{idx}")
+        # Modifica Protetta
+        pwd = st.text_input("Password per modificare", type="password", key=f"p_{idx}")
         if pwd == "Judaz2026":
             new_info = st.text_area("Modifica Info", value=row.get('Dettagli / Note', ''), key=f"edit_{idx}")
             if st.button("SALVA MODIFICHE", key=f"save_{idx}"):
