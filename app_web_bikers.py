@@ -9,40 +9,57 @@ def registra_voto(id_evento):
     with open("voti_fatti.txt", "a") as f:
         f.write(f"{id_evento}\n")
 
-# --- CSS E STILE (Puro HTML/CSS per evitare errori Streamlit) ---
+def ha_gia_votato(id_evento):
+    if not os.path.exists("voti_fatti.txt"): return False
+    with open("voti_fatti.txt", "r") as f:
+        return str(id_evento) in f.read().splitlines()
+
+# --- CSS ---
 st.markdown("""
 <style>
 .stApp { background-color: #161719; }
-.event-card { 
-    background-color: #1f2124; border: 2px solid #ff9100; 
-    border-radius: 10px; padding: 15px; margin-bottom: 15px; 
-    color: white; font-family: sans-serif;
+#MainMenu, footer, header {visibility: hidden !important;}
+.block-container { padding-bottom: 6rem !important; }
+
+/* Stile per l'expander */
+.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; color: white !important; }
+.streamlit-expanderHeader { color: #ff9100 !important; font-weight: bold !important; }
+
+div[data-testid="stButton"] button {
+    background-color: #ff9100 !important; color: black !important; 
+    font-weight: bold !important; font-family: 'Special Elite', cursive !important; 
+    border-radius: 5px !important; width: 100%;
 }
-.titolo-evento { color: #ff9100; font-size: 1.2rem; font-weight: bold; }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='color:#ff9100; text-align:center;'>Iron & Rubber</h1>", unsafe_allow_html=True)
+# --- LOGO E TITOLI ---
+if os.path.exists("logo_custom.png"):
+    st.image("logo_custom.png")
 
-# --- AGGIUNGI EVENTO ---
-with st.expander("➕ AGGIUNGI NUOVO EVENTO"):
-    with st.form("add_form"):
-        n = st.text_input("Nome")
-        if st.form_submit_button("SALVA"): st.success("Evento aggiunto!")
+st.markdown("<h1 style='text-align:center; color:#ff9100;'>Iron & Rubber</h1>", unsafe_allow_html=True)
 
-# --- LISTA EVENTI ---
+# --- LISTA EVENTI CON TENDINA ---
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     for i, row in df.iterrows():
-        # Creiamo un contenitore semplice
-        with st.container():
-            st.markdown(f"<div class='event-card'><div class='titolo-evento'>{row['Nome Evento / Raduno']}</div>", unsafe_allow_html=True)
-            st.write(f"📅 {row['Data']} | 📍 {row['Luogo']}")
-            
-            # Bottone di voto standard (il più stabile in Streamlit)
-            if st.button(f"CI VADO 🔥", key=f"voto_{i}"):
+        # L'expander crea la "tendina" 
+        with st.expander(f"📅 {row['Nome Evento / Raduno']}"):
+            st.write(f"📍 {row['Luogo']}")
+            img_path = str(row.get('Locandina', ''))
+            if img_path and os.path.exists(img_path):
+                st.image(img_path, use_container_width=True)
+        
+        # Il bottone sta FUORI dall'expander, così è sempre cliccabile [cite: 12, 13]
+        label = f"CI VADO 🔥 {int(row.get('Partecipanti', 0))}"
+        if ha_gia_votato(i):
+            st.button(label, key=f"btn_{i}", disabled=True)
+        else:
+            if st.button(label, key=f"btn_{i}"):
+                df.at[i, 'Partecipanti'] = int(row.get('Partecipanti', 0)) + 1
+                df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
                 registra_voto(i)
                 st.rerun()
-            st.markdown("</div>", unsafe_allow_html=True)
-except:
-    st.error("Errore file.")
+
+except Exception as e:
+    st.error(f"Errore: {e}")
