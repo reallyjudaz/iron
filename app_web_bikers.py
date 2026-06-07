@@ -11,7 +11,7 @@ def ha_gia_votato(id_evento):
     if not os.path.exists("voti_fatti.txt"): return False
     with open("voti_fatti.txt", "r") as f: return str(id_evento) in f.read().splitlines()
 
-# --- CSS (Grafica pulita e stili gotici) ---
+# --- CSS CON SCRITTE BIANCHE NEL FORM ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
@@ -19,6 +19,12 @@ st.markdown("""
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; }
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; color: white !important; }
+
+/* Forza le scritte del form in bianco */
+label, .stTextInput label, .stTextArea label, .stFileUploader label { 
+    color: white !important; font-weight: bold !important; 
+}
+
 div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold; }
 </style>
 """, unsafe_allow_html=True)
