@@ -4,6 +4,19 @@ import os
 
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
+# --- FUNZIONI PER MEMORIA PERMANENTE ---
+def registra_voto(id_evento):
+    with open("voti_fatti.txt", "a") as f:
+        f.write(f"{id_evento}\n")
+
+def ha_gia_votato(id_evento):
+    if not os.path.exists("voti_fatti.txt"):
+        return False
+    with open("voti_fatti.txt", "r") as f:
+        voti = f.read().splitlines()
+        return str(id_evento) in voti
+
+# --- CSS E STILE ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
@@ -11,9 +24,9 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
-.block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; align-items: center !important; }
+.block-container { padding-top: 0rem !important; padding-bottom: 6rem !important; }
 
-.logo-wrapper { display: flex !important; justify-content: center !important; width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important; margin-bottom: 0px !important; }
+.logo-wrapper { display: flex !important; justify-content: center !important; width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important; }
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -40px !important; margin-bottom: 0px !important; text-shadow: 2px 2px 4px #000; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-top: -5px !important; margin-bottom: 20px !important; }
 
@@ -26,12 +39,10 @@ div[data-testid="stButton"] button {
     font-weight: bold !important; font-family: 'Special Elite', cursive !important; 
     border-radius: 5px !important; height: 38px !important; width: 100%;
 }
-
-.menu-fisso { position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: flex-start; gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999; }
-.menu-btn { font-family: 'Special Elite', cursive !important; color: #ff9100 !important; font-weight: bold; text-decoration: none; font-size: 1.2rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
+# --- LOGO E TITOLI ---
 if os.path.exists("logo_custom.png"):
     st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
     st.image("logo_custom.png")
@@ -40,11 +51,10 @@ if os.path.exists("logo_custom.png"):
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
+# --- LISTA EVENTI ---
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
-    
-    if 'ha_votato' not in st.session_state: st.session_state.ha_votato = []
 
     for i, row in df.iterrows():
         nome = str(row.get('Nome Evento / Raduno', 'Evento'))
@@ -61,24 +71,26 @@ try:
             
         label = f"CI VADO 🔥 {conteggio}"
         
-        if i in st.session_state.ha_votato:
+        # LOGICA BOTTONE PERMANENTE
+        if ha_gia_votato(i):
             st.button(label, key=f"btn_{i}", disabled=True)
         else:
             if st.button(label, key=f"btn_{i}"):
                 df.at[i, 'Partecipanti'] = conteggio + 1
                 df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
-                st.session_state.ha_votato.append(i)
+                registra_voto(i)
                 st.rerun()
         
         st.markdown("</div>", unsafe_allow_html=True)
 
 except Exception as e:
-    st.error(f"Errore: {e}")
+    st.error(f"Errore: {e}. Assicurati che il file Excel sia chiuso.")
 
+# --- MENU ---
 st.markdown("""
-<div class='menu-fisso'>
-    <a href='#' class='menu-btn'>HOME</a>
-    <a href='#' class='menu-btn'>MC</a>
-    <a href='#' class='menu-btn'>ADMIN</a>
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: flex-start; gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999;'>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>HOME</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>MC</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>ADMIN</a>
 </div>
 """, unsafe_allow_html=True)
