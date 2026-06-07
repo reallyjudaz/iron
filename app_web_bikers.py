@@ -24,6 +24,9 @@ st.markdown("""
 #MainMenu, footer, header {visibility: hidden !important; }
 .block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
 
+/* Testi Bianchi nel Form */
+label, .stFileUploader label { color: white !important; font-family: 'Special Elite', cursive !important; }
+
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
 
@@ -44,21 +47,35 @@ if os.path.exists("logo_custom.png"):
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
-# --- AGGIUNGI EVENTO (A TENDINA) ---
+# --- AGGIUNGI EVENTO ---
 with st.expander("➕ AGGIUNGI NUOVO EVENTO"):
-    with st.form("form_aggiungi"):
+    with st.form("form_aggiungi", clear_on_submit=True):
         nuovo_nome = st.text_input("Nome Evento")
         nuova_data = st.text_input("Data (es. 12/06/2026)")
         nuovo_luogo = st.text_input("Luogo")
+        file_locandina = st.file_uploader("Carica Locandina", type=['png', 'jpg', 'jpeg'])
         submit = st.form_submit_button("SALVA EVENTO")
         
         if submit:
+            if not os.path.exists("locandine"): os.makedirs("locandine")
+            path_salvataggio = ""
+            if file_locandina is not None:
+                path_salvataggio = os.path.join("locandine", file_locandina.name)
+                with open(path_salvataggio, "wb") as f:
+                    f.write(file_locandina.getbuffer())
+            
             if os.path.exists("Lista_Eventi_Bikers_Judaz.xlsx"):
                 df_base = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
-                nuovo_rigo = pd.DataFrame([{"Nome Evento / Raduno": nuovo_nome, "Data": nuova_data, "Luogo": nuovo_luogo, "Partecipanti": 0}])
+                nuovo_rigo = pd.DataFrame([{
+                    "Nome Evento / Raduno": nuovo_nome, 
+                    "Data": nuova_data, 
+                    "Luogo": nuovo_luogo, 
+                    "Locandina": path_salvataggio,
+                    "Partecipanti": 0
+                }])
                 df_nuovo = pd.concat([df_base, nuovo_rigo], ignore_index=True)
                 df_nuovo.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
-                st.success("Evento aggiunto con successo!")
+                st.success("Evento aggiunto!")
                 st.rerun()
 
 # --- LISTA EVENTI ---
@@ -68,10 +85,7 @@ try:
 
     for i, row in df.iterrows():
         with st.expander(f"{row['Data']} - {row['Nome Evento / Raduno']}"):
-            st.write(f"📅 **Data:** {row['Data']}")
             st.write(f"📍 **Luogo:** {row['Luogo']}")
-            st.write(f"📝 **Note:** {row.get('Dettagli / Note', 'Nessuna nota.')}")
-            
             img_path = str(row.get('Locandina', ''))
             if img_path and os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
