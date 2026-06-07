@@ -2,25 +2,31 @@ import streamlit as st
 import pandas as pd
 import os
 
-# 1. Cambiato da 'centered' a 'wide'
-st.set_page_config(page_title="Iron & Rubber", layout="wide")
+st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
-# --- CSS (Ora forza l'allineamento a sinistra nel layout wide) ---
+# --- CSS (SOLO ALLINEAMENTO A SINISTRA) ---
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
 
-/* Forza il contenuto principale a sinistra e limita la larghezza */
+/* Mantiene il blocco principale a sinistra forzando i margini */
 .block-container { 
-    max-width: 800px !important; 
-    padding-left: 2rem !important;
-    text-align: left !important;
+    padding-top: 0rem !important; 
     padding-bottom: 120px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    max-width: 800px !important;
 }
 
-.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive; color: #ff9100; font-size: 2.6rem; text-align: left; }
-.sottotitolo { font-family: 'UnifrakturMaguntia', cursive; color: #ff9100; font-size: 1.4rem; margin-bottom: 20px; text-align: left; }
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: left !important; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
+.sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: left !important; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
+
+.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
+.streamlit-expanderHeader { color: #ff9100 !important; font-weight: bold !important; font-size: 1.0rem !important; justify-content: flex-start !important; }
 
 div[data-testid="stButton"] button { 
     background-color: #ff9100 !important; color: black !important; font-weight: bold !important; 
@@ -31,7 +37,7 @@ div[data-testid="stButton"] button {
 
 # --- LOGO E TITOLI ---
 if os.path.exists("logo_custom.png"):
-    st.image("logo_custom.png", width=250)
+    st.image("logo_custom.png", width=200) # Logo a sinistra
 
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
@@ -42,15 +48,12 @@ try:
     df.columns = df.columns.str.strip()
 
     for i, row in df.iterrows():
-        titolo_expander = f"{row['Data']} - {row['Nome Evento / Raduno']}"
-        with st.expander(titolo_expander):
+        with st.expander(f"{row['Data']} - {row['Nome Evento / Raduno']}"):
             st.write(f"📅 **Data:** {row['Data']}")
             st.write(f"📍 **Luogo:** {row['Luogo']}")
             st.write(f"📝 **Note:** {row.get('Dettagli / Note', 'Nessuna nota.')}")
-            
-            img_path = str(row.get('Locandina', ''))
-            if img_path and os.path.exists(img_path):
-                st.image(img_path, use_container_width=True)
+            if os.path.exists(str(row.get('Locandina', ''))):
+                st.image(str(row['Locandina']), use_container_width=True)
 
         conteggio = int(row.get('Partecipanti', 0))
         if st.button(f"CI VADO 🔥 {conteggio}", key=f"btn_{i}"):
@@ -61,9 +64,9 @@ try:
 except Exception:
     st.error("Errore caricamento file.")
 
-# --- MENU FISSO (Allineato a sinistra) ---
+# --- MENU FISSO A SINISTRA ---
 st.markdown("""
-<div style='position: fixed; bottom: 0; left: 0; width: 100%; background-color: #1f2124; border-top: 3px solid #ff9100; padding: 15px 2rem; z-index: 999999;'>
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background-color: #1f2124; border-top: 3px solid #ff9100; padding: 15px 20px; z-index: 999999;'>
     <b style='color:#ff9100; font-family: Special Elite; font-size: 1.3rem; cursor: pointer;'>+ AGGIUNGI EVENTO</b>
 </div>
 """, unsafe_allow_html=True)
