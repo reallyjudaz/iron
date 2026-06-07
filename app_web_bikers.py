@@ -14,7 +14,7 @@ def ha_gia_votato(id_evento):
     with open("voti_fatti.txt", "r") as f:
         return str(id_evento) in f.read().splitlines()
 
-# --- CSS ORIGINALE + EXPANDER ---
+# --- CSS DEFINITIVO ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
@@ -22,7 +22,9 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
-.block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
+
+/* Aggiunto padding-bottom per evitare sovrapposizioni con i tasti nativi */
+.block-container { padding-top: 0rem !important; padding-bottom: 160px !important; }
 
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
@@ -52,7 +54,6 @@ try:
     df.columns = df.columns.str.strip()
 
     for i, row in df.iterrows():
-        # DATA NEL TITOLO DELL'EXPANDER
         titolo_expander = f"{row['Data']} - {row['Nome Evento / Raduno']}"
         
         with st.expander(titolo_expander):
@@ -76,12 +77,14 @@ try:
                 registra_voto(i)
                 st.rerun()
 
-except Exception as e:
+except Exception:
     st.error("Errore caricamento file.")
 
-# --- MENU FISSO ---
+# --- MENU FISSO (Z-index alto e box-shadow per stacco) ---
 st.markdown("""
-<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 15px 20px; border-top: 3px solid #ff9100; display: flex; justify-content: space-around; z-index: 9999;'>
-    <b style='color:#ff9100;'>HOME</b><b style='color:#ff9100;'>MC</b><b style='color:#ff9100;'>ADMIN</b>
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 20px; border-top: 3px solid #ff9100; display: flex; justify-content: space-around; z-index: 99999; box-shadow: 0px -5px 15px rgba(0,0,0,0.8);'>
+    <b style='color:#ff9100; font-family: Special Elite;'>HOME</b>
+    <b style='color:#ff9100; font-family: Special Elite;'>MC</b>
+    <b style='color:#ff9100; font-family: Special Elite;'>ADMIN</b>
 </div>
 """, unsafe_allow_html=True)
