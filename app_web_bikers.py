@@ -21,10 +21,10 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
 .stApp { background-color: #161719; }
-#MainMenu, footer, header {visibility: hidden !important;}
+#MainMenu, header {visibility: hidden !important;}
 
-/* Aggiunto padding-bottom per evitare sovrapposizioni con i tasti nativi */
-.block-container { padding-top: 0rem !important; padding-bottom: 160px !important; }
+/* Questo padding-bottom spinge il contenuto in alto, liberando spazio in fondo per il menu */
+.block-container { padding-top: 0rem !important; padding-bottom: 250px !important; }
 
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
@@ -65,7 +65,6 @@ try:
             if img_path and os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
 
-        # Bottone Voto
         conteggio = int(row.get('Partecipanti', 0))
         label = f"CI VADO 🔥 {conteggio}"
         if ha_gia_votato(i):
@@ -78,13 +77,13 @@ try:
                 st.rerun()
 
 except Exception:
-    st.error("Errore caricamento file.")
+    st.error("Errore nel caricamento del file.")
 
-# --- MENU FISSO (Z-index alto e box-shadow per stacco) ---
+# --- MENU FISSO (Z-index estremo per stare davanti a tutto) ---
 st.markdown("""
-<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 20px; border-top: 3px solid #ff9100; display: flex; justify-content: space-around; z-index: 99999; box-shadow: 0px -5px 15px rgba(0,0,0,0.8);'>
-    <b style='color:#ff9100; font-family: Special Elite;'>HOME</b>
-    <b style='color:#ff9100; font-family: Special Elite;'>MC</b>
-    <b style='color:#ff9100; font-family: Special Elite;'>ADMIN</b>
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 25px 0; border-top: 3px solid #ff9100; display: flex; justify-content: space-around; z-index: 999999; box-shadow: 0px -5px 15px rgba(0,0,0,0.8);'>
+    <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem;'>HOME</b>
+    <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem;'>MC</b>
+    <b style='color:#ff9100; font-family: Special Elite; font-size: 1.2rem;'>ADMIN</b>
 </div>
 """, unsafe_allow_html=True)
