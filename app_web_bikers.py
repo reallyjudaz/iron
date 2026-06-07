@@ -4,48 +4,35 @@ import os
 
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
-# --- CSS E STILE ---
+# --- CSS (Mantiene il look della tua prima immagine) ---
 st.markdown("""
 <style>
 .stApp { background-color: #161719; }
 #MainMenu, header {visibility: hidden !important;}
-/* Spazio extra sotto per evitare che il menu sia coperto dai tasti nativi */
-.block-container { padding-bottom: 120px !important; }
-
+.block-container { padding-bottom: 150px !important; }
 .event-box { background-color: #1f2124; padding: 15px; margin-bottom: 15px; border: 2px solid #ff9100; border-radius: 10px; color: white; }
-.dettaglio-box { background-color: #1f2124; padding: 20px; border: 3px solid #ff9100; border-radius: 15px; color: white; margin-bottom: 20px; }
-
-/* Tasti stile Iron & Rubber */
-div[data-testid="stButton"] button { 
-    background-color: #ff9100 !important; color: black !important; font-weight: bold !important; 
-    border-radius: 5px !important; border: none !important; width: 100%; height: 40px; 
-}
+.dettaglio-box { background-color: #1f2124; padding: 20px; border: 3px solid #ff9100; border-radius: 15px; color: white; }
+div[data-testid="stForm"] { border: none !important; background: transparent !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# --- STATO ---
 if 'dettaglio_id' not in st.session_state: st.session_state.dettaglio_id = None
 
-# --- CARICAMENTO ---
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
 except:
     df = pd.DataFrame()
 
-# --- LOGICA ---
 if not df.empty:
     if st.session_state.dettaglio_id is None:
-        # LISTA
+        # LISTA: Ogni box è un FORM (quindi cliccabile per intero)
         for i, row in df.iterrows():
-            st.markdown(f"<div class='event-box'>", unsafe_allow_html=True)
-            st.subheader(row['Nome Evento / Raduno'])
-            st.write(f"📅 {row['Data']} | 📍 {row['Luogo']}")
-            
-            if st.button("VEDI DETTAGLI", key=f"btn_{i}"):
-                st.session_state.dettaglio_id = i
-                st.rerun()
-            st.markdown("</div>", unsafe_allow_html=True)
+            with st.form(key=f"form_{i}"):
+                st.markdown(f"<div class='event-box'><h3>{row['Nome Evento / Raduno']}</h3><p>📅 {row['Data']} | 📍 {row['Luogo']}</p></div>", unsafe_allow_html=True)
+                if st.form_submit_button("APRI EVENTO"):
+                    st.session_state.dettaglio_id = i
+                    st.rerun()
     else:
         # DETTAGLIO
         i = st.session_state.dettaglio_id
@@ -64,11 +51,9 @@ if not df.empty:
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-# --- MENU FISSO ---
+# --- MENU FISSO (Posizionato in basso in modo assoluto) ---
 st.markdown("""
 <div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 15px 0; border-top: 3px solid #ff9100; display: flex; justify-content: space-evenly; z-index: 9999;'>
-    <span style='color:#ff9100; font-weight:bold;'>HOME</span>
-    <span style='color:#ff9100; font-weight:bold;'>MC</span>
-    <span style='color:#ff9100; font-weight:bold;'>ADMIN</span>
+    <b style='color:#ff9100;'>HOME</b><b style='color:#ff9100;'>MC</b><b style='color:#ff9100;'>ADMIN</b>
 </div>
 """, unsafe_allow_html=True)
