@@ -22,16 +22,16 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
-.block-container { padding-top: 0rem !important; }
+
+/* Padding bottom per fare spazio al menu fisso */
+.block-container { padding-top: 0rem !important; padding-bottom: 100px !important; }
 
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
 
-/* Stile Expander */
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
 .streamlit-expanderHeader { color: #ff9100 !important; font-weight: bold !important; font-size: 1.0rem !important; }
 
-/* Bottoni */
 div[data-testid="stButton"] button { 
     background-color: #ff9100 !important; color: black !important; font-weight: bold !important; 
     font-family: 'Special Elite', cursive !important; border-radius: 5px !important; height: 38px !important; width: 100%; 
@@ -52,7 +52,6 @@ try:
     df.columns = df.columns.str.strip()
 
     for i, row in df.iterrows():
-        # DATA NEL TITOLO DELL'EXPANDER
         titolo_expander = f"{row['Data']} - {row['Nome Evento / Raduno']}"
         
         with st.expander(titolo_expander):
@@ -64,7 +63,6 @@ try:
             if img_path and os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
 
-        # Bottone Voto
         conteggio = int(row.get('Partecipanti', 0))
         label = f"CI VADO 🔥 {conteggio}"
         if ha_gia_votato(i):
@@ -78,3 +76,10 @@ try:
 
 except Exception as e:
     st.error("Errore caricamento file.")
+
+# --- MENU FISSO (Solo Aggiungi Evento) ---
+st.markdown("""
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background-color: #1f2124; border-top: 3px solid #ff9100; padding: 15px 0; display: flex; justify-content: center; z-index: 999999;'>
+    <b style='color:#ff9100; font-family: Special Elite; font-size: 1.3rem; cursor: pointer;'>+ AGGIUNGI EVENTO</b>
+</div>
+""", unsafe_allow_html=True)
