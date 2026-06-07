@@ -14,32 +14,37 @@ def ha_gia_votato(id_evento):
     with open("voti_fatti.txt", "r") as f:
         return str(id_evento) in f.read().splitlines()
 
-# --- CSS PERSONALIZZATO PER L'EXPANDER ---
+# --- CSS ORIGINALE + EXPANDER ---
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
 .stApp { background-color: #161719; }
-#MainMenu, header {visibility: hidden !important;}
-.block-container { padding-bottom: 100px !important; }
+#MainMenu, footer, header {visibility: hidden !important;}
+.block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
 
-/* Rende l'expander trasparente e coerente con i tuoi box */
-.stExpander { 
-    background-color: #1f2124 !important; 
-    border: 2px solid #ff9100 !important; 
-    border-radius: 10px !important; 
-}
-.streamlit-expanderHeader { 
-    color: #ff9100 !important; 
-    font-weight: bold !important; 
-    font-size: 1.1rem !important; 
-}
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
+.sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
 
-/* Bottone VOTO stile originale */
+/* Stile Expander (il tuo box arancione) */
+.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
+.streamlit-expanderHeader { color: #ff9100 !important; font-weight: bold !important; font-size: 1.1rem !important; }
+
+/* Bottoni */
 div[data-testid="stButton"] button { 
     background-color: #ff9100 !important; color: black !important; font-weight: bold !important; 
-    border-radius: 5px !important; border: none !important; width: 100%; height: 38px; 
+    font-family: 'Special Elite', cursive !important; border-radius: 5px !important; height: 38px !important; width: 100%; 
 }
 </style>
 """, unsafe_allow_html=True)
+
+# --- LOGO E TITOLI (RIPRISTINATI) ---
+if os.path.exists("logo_custom.png"):
+    st.image("logo_custom.png", use_container_width=True)
+
+st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
 # --- LISTA EVENTI ---
 try:
@@ -47,7 +52,7 @@ try:
     df.columns = df.columns.str.strip()
 
     for i, row in df.iterrows():
-        # L'expander diventa il tuo "box arancione" cliccabile
+        # Expander per il dettaglio
         with st.expander(f"{row['Nome Evento / Raduno']}"):
             st.write(f"📅 **Data:** {row['Data']}")
             st.write(f"📍 **Luogo:** {row['Luogo']}")
@@ -57,7 +62,7 @@ try:
             if img_path and os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
 
-        # Bottone voto subito sotto
+        # Bottone Voto
         conteggio = int(row.get('Partecipanti', 0))
         label = f"CI VADO 🔥 {conteggio}"
         if ha_gia_votato(i):
@@ -68,14 +73,13 @@ try:
                 df.to_excel("Lista_Eventi_Bikers_Judaz.xlsx", index=False)
                 registra_voto(i)
                 st.rerun()
-        st.markdown("<br>", unsafe_allow_html=True)
 
 except Exception as e:
-    st.error("Errore nel caricamento eventi.")
+    st.error("Errore caricamento file.")
 
-# --- MENU FISSO (Senza errori) ---
+# --- MENU FISSO ---
 st.markdown("""
-<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 15px 0; border-top: 3px solid #ff9100; display: flex; justify-content: space-evenly; z-index: 9999;'>
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 15px 20px; border-top: 3px solid #ff9100; display: flex; justify-content: space-around; z-index: 9999;'>
     <b style='color:#ff9100;'>HOME</b><b style='color:#ff9100;'>MC</b><b style='color:#ff9100;'>ADMIN</b>
 </div>
 """, unsafe_allow_html=True)
