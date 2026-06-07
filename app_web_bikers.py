@@ -14,7 +14,7 @@ def ha_gia_votato(id_evento):
     with open("voti_fatti.txt", "r") as f:
         return str(id_evento) in f.read().splitlines()
 
-# --- CSS ORIGINALE + EXPANDER ---
+# --- CSS INTEGRATO ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
@@ -22,18 +22,20 @@ st.markdown("""
 
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
+
+/* Spazio extra in basso per non far coprire l'ultimo evento dal menu fisso  */
 .block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
 
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
 
-/* Stile Expander */
+/* Stile Expander [cite: 17, 18] */
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
 .streamlit-expanderHeader { color: #ff9100 !important; font-weight: bold !important; font-size: 1.0rem !important; }
 
-/* Bottoni */
+/* Bottoni [cite: 20, 21] */
 div[data-testid="stButton"] button { 
-    background-color: #ff9100 !important; color: black !important; font-weight: bold !important; 
+    background-color: #ff9100 !important; color: black !important; font-weight: bold !important;
     font-family: 'Special Elite', cursive !important; border-radius: 5px !important; height: 38px !important; width: 100%; 
 }
 </style>
@@ -46,16 +48,14 @@ if os.path.exists("logo_custom.png"):
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
-# --- LISTA EVENTI ---
+# --- LISTA EVENTI (Logica Funzionante) ---
 try:
     df = pd.read_excel("Lista_Eventi_Bikers_Judaz.xlsx")
     df.columns = df.columns.str.strip()
 
     for i, row in df.iterrows():
-        # DATA NEL TITOLO DELL'EXPANDER
-        titolo_expander = f"{row['Data']} - {row['Nome Evento / Raduno']}"
-        
-        with st.expander(titolo_expander):
+        # Expander come da Codice 3 [cite: 22, 23]
+        with st.expander(f"{row['Data']} - {row['Nome Evento / Raduno']}"):
             st.write(f"📅 **Data:** {row['Data']}")
             st.write(f"📍 **Luogo:** {row['Luogo']}")
             st.write(f"📝 **Note:** {row.get('Dettagli / Note', 'Nessuna nota.')}")
@@ -64,7 +64,7 @@ try:
             if img_path and os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
 
-        # Bottone Voto
+        # Bottone Voto [cite: 24]
         conteggio = int(row.get('Partecipanti', 0))
         label = f"CI VADO 🔥 {conteggio}"
         if ha_gia_votato(i):
@@ -76,12 +76,14 @@ try:
                 registra_voto(i)
                 st.rerun()
 
-except Exception as e:
+except Exception:
     st.error("Errore caricamento file.")
 
-# --- MENU FISSO ---
+# --- MENU FISSO (Preso dal Codice 2)  ---
 st.markdown("""
-<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 15px 20px; border-top: 3px solid #ff9100; display: flex; justify-content: space-around; z-index: 9999;'>
-    <b style='color:#ff9100;'>HOME</b><b style='color:#ff9100;'>MC</b><b style='color:#ff9100;'>ADMIN</b>
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: flex-start; gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999;'>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>HOME</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>MC</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>ADMIN</a>
 </div>
 """, unsafe_allow_html=True)
