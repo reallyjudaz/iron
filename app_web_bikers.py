@@ -27,9 +27,9 @@ st.markdown("""
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
 
-/* Stile Expander (il tuo box arancione) */
+/* Stile Expander */
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
-.streamlit-expanderHeader { color: #ff9100 !important; font-weight: bold !important; font-size: 1.1rem !important; }
+.streamlit-expanderHeader { color: #ff9100 !important; font-weight: bold !important; font-size: 1.0rem !important; }
 
 /* Bottoni */
 div[data-testid="stButton"] button { 
@@ -39,7 +39,7 @@ div[data-testid="stButton"] button {
 </style>
 """, unsafe_allow_html=True)
 
-# --- LOGO E TITOLI (RIPRISTINATI) ---
+# --- LOGO E TITOLI ---
 if os.path.exists("logo_custom.png"):
     st.image("logo_custom.png", use_container_width=True)
 
@@ -52,8 +52,10 @@ try:
     df.columns = df.columns.str.strip()
 
     for i, row in df.iterrows():
-        # Expander per il dettaglio
-        with st.expander(f"{row['Nome Evento / Raduno']}"):
+        # DATA NEL TITOLO DELL'EXPANDER
+        titolo_expander = f"{row['Data']} - {row['Nome Evento / Raduno']}"
+        
+        with st.expander(titolo_expander):
             st.write(f"📅 **Data:** {row['Data']}")
             st.write(f"📍 **Luogo:** {row['Luogo']}")
             st.write(f"📝 **Note:** {row.get('Dettagli / Note', 'Nessuna nota.')}")
