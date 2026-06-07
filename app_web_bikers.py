@@ -48,20 +48,22 @@ if os.path.exists("logo_custom.png"):
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
-# --- LOGIN ADMIN ---
-if not st.session_state.admin_logged_in:
-    if st.button("🔑 LOGIN ADMIN"):
-        st.session_state.show_login = True
-    if st.session_state.get("show_login", False):
-        pwd = st.text_input("Inserisci Password", type="password")
-        if pwd == "Judaz2026":
-            st.session_state.admin_logged_in = True
-            st.rerun()
-        elif pwd:
-            st.error("Password errata")
-else:
-    if st.button("🚪 ESCI ADMIN"):
+# --- LOGICA LOGIN ADMIN ---
+if st.query_params.get("admin") == "true":
+    st.session_state.show_login = True
+
+if st.session_state.get("show_login", False) and not st.session_state.admin_logged_in:
+    pwd = st.text_input("Inserisci Password Admin", type="password")
+    if pwd == "Judaz2026":
+        st.session_state.admin_logged_in = True
+        st.rerun()
+    elif pwd:
+        st.error("Password errata")
+
+if st.session_state.admin_logged_in:
+    if st.button("🚪 ESCI DA MODALITÀ ADMIN"):
         st.session_state.admin_logged_in = False
+        st.query_params.clear()
         st.rerun()
 
 # --- LISTA EVENTI ---
@@ -70,6 +72,7 @@ try:
     df.columns = df.columns.str.strip()
 
     for i, row in df.iterrows():
+        # Tendina evento
         with st.expander(f"{row['Data']} - {row['Nome Evento / Raduno']}"):
             st.write(f"📅 **Data:** {row['Data']}")
             st.write(f"📍 **Luogo:** {row['Luogo']}")
@@ -79,7 +82,7 @@ try:
             if img_path and os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
             
-            # Tasti Admin
+            # Tasto Elimina (solo se Admin)
             if st.session_state.admin_logged_in:
                 if st.button(f"🗑️ ELIMINA EVENTO", key=f"del_{i}"):
                     df = df.drop(i)
@@ -98,12 +101,14 @@ try:
                 registra_voto(i)
                 st.rerun()
 
-except Exception:
+except Exception as e:
     st.error("Errore caricamento file.")
 
-# --- MENU FISSO ---
+# --- MENU FISSO (Link testuali per evitare sovrapposizioni) ---
 st.markdown("""
 <div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; padding: 15px 20px; border-top: 3px solid #ff9100; display: flex; justify-content: space-around; z-index: 9999;'>
-    <b style='color:#ff9100;'>HOME</b><b style='color:#ff9100;'>MC</b><b style='color:#ff9100;'>ADMIN</b>
+    <a href='/' style='color: #ff9100; font-weight: bold; text-decoration: none;'>HOME</a>
+    <a href='#' style='color: #ff9100; font-weight: bold; text-decoration: none;'>MC</a>
+    <a href='?admin=true' style='color: #ff9100; font-weight: bold; text-decoration: none;'>ADMIN</a>
 </div>
 """, unsafe_allow_html=True)
