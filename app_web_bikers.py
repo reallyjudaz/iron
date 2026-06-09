@@ -75,12 +75,17 @@ for idx, row in df.iterrows():
                 new_d = st.text_input("Data", value=row['Data'])
                 new_l = st.text_input("Luogo", value=row['Luogo'])
                 new_i = st.text_area("Info", value=row.get('Dettagli / Note', ''))
+                new_f = st.file_uploader("Aggiorna Locandina", type=['jpg', 'png'])
                 
                 c1, c2 = st.columns(2)
-                if c1.form_submit_button("💾 SALVA"):
-                    df.loc[df['ID'] == event_id, ['Nome Evento / Raduno', 'Data', 'Luogo', 'Dettagli / Note']] = [new_n, new_d, new_l, new_i]
+                if c1.form_submit_button("💾 SALVA MODIFICHE"):
+                    path = row['Locandina']
+                    if new_f:
+                        path = os.path.join("locandine", new_f.name)
+                        with open(path, "wb") as file: file.write(new_f.getbuffer())
+                    df.loc[df['ID'] == event_id, ['Nome Evento / Raduno', 'Data', 'Luogo', 'Dettagli / Note', 'Locandina']] = [new_n, new_d, new_l, new_i, path]
                     df.to_excel(FILE_EXCEL, index=False); st.rerun()
-                if c2.form_submit_button("❌ ELIMINA"):
+                if c2.form_submit_button("❌ ELIMINA POST"):
                     df = df[df['ID'] != event_id]
                     df.to_excel(FILE_EXCEL, index=False); st.rerun()
 
