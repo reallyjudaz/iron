@@ -24,7 +24,7 @@ else:
         df['ID'] = [str(uuid.uuid4()) for _ in range(len(df))]
         df.to_excel(FILE_EXCEL, index=False)
 
-# --- CSS ORIGINALE RIPRISTINATO ---
+# --- CSS ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
@@ -36,6 +36,9 @@ st.markdown("""
 
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
 .sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.6rem !important; margin-top: 20px !important; margin-bottom: 20px !important; }
+
+/* La classe per la scritta semplice e leggibile */
+.testo-normale { font-family: sans-serif !important; text-align: center; color: #ff9100 !important; font-size: 1.2rem !important; font-weight: bold; margin-bottom: 20px !important; }
 
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
 
@@ -70,8 +73,8 @@ with st.expander("➕ AGGIUNGI EVENTO"):
             pd.concat([df, nuovo], ignore_index=True).to_excel(FILE_EXCEL, index=False)
             st.rerun()
 
-# --- TITOLO SEZIONE RIPRISTINATO ---
-st.markdown("<p class='sottotitolo'>PROSSIMI EVENTI</p>", unsafe_allow_html=True)
+# --- SCRITTA NORMALE ---
+st.markdown("<p class='testo-normale'>PROSSIMI EVENTI</p>", unsafe_allow_html=True)
 
 # --- LISTA EVENTI ---
 df = pd.read_excel(FILE_EXCEL)
