@@ -96,4 +96,24 @@ for idx, row in df.iterrows():
                 c1, c2 = st.columns(2)
                 if c1.form_submit_button("SALVA"):
                     path = row['Locandina']
-                    if new
+                    if new_f:
+                        path = os.path.join("locandine", new_f.name)
+                        with open(path, "wb") as file: file.write(new_f.getbuffer())
+                    df.loc[df['ID'] == event_id, ['Nome Evento / Raduno', 'Data', 'Luogo', 'Dettagli / Note', 'Locandina']] = [new_n, new_d, new_l, new_i, path]
+                    df.to_excel(FILE_EXCEL, index=False); st.rerun()
+                if c2.form_submit_button("CANCELLA EVENTO"):
+                    df = df[df['ID'] != event_id]
+                    df.to_excel(FILE_EXCEL, index=False); st.rerun()
+
+    if st.button(f"CI VADO 🔥 {int(row.get('Partecipanti', 0))}", key=f"btn_{event_id}", disabled=ha_gia_votato(event_id)):
+        df.loc[df['ID'] == event_id, 'Partecipanti'] = int(row.get('Partecipanti', 0)) + 1
+        df.to_excel(FILE_EXCEL, index=False); registra_voto(event_id); st.rerun()
+
+# --- MENU FISSO ---
+st.markdown("""
+<div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: flex-start; gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999;'>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>HOME</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>MC</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>ADMIN</a>
+</div>
+""", unsafe_allow_html=True)
