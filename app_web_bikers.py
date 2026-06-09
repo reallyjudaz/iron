@@ -41,12 +41,14 @@ st.markdown("""
 
 /* La nostra riga-catena */
 .riga-catena { 
-    border-top: 4px dashed #ff9100; 
-    margin: 20px 0; 
-    position: relative;
-    opacity: 0.6;
+    text-align: center;
+    color: #ff9100;
+    font-size: 1.5rem;
+    margin: 20px 0;
+    letter-spacing: 5px;
 }
 
+/* Forza testo nero su tutti i bottoni */
 div[data-testid="stButton"] button, div[data-testid="stFormSubmitButton"] button { 
     background-color: #ff9100 !important; 
     color: black !important; 
@@ -79,7 +81,7 @@ with st.expander("➕ AGGIUNGI EVENTO"):
             st.rerun()
 
 # --- RIGA CATENA ---
-st.markdown("<div class='riga-catena'></div>", unsafe_allow_html=True)
+st.markdown("<div class='riga-catena'>⛓️ ⛓️ ⛓️ ⛓️ ⛓️ ⛓️ ⛓️</div>", unsafe_allow_html=True)
 
 # --- LISTA EVENTI ---
 df = pd.read_excel(FILE_EXCEL)
