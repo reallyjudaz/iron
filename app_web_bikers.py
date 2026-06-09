@@ -14,7 +14,7 @@ def ha_gia_votato(id_univoco):
     if not os.path.exists("voti_fatti.txt"): return False
     with open("voti_fatti.txt", "r") as f: return str(id_univoco) in f.read().splitlines()
 
-# --- CARICAMENTO E RIPRISTINO COLONNE ---
+# --- CARICAMENTO ---
 if not os.path.exists(FILE_EXCEL):
     df = pd.DataFrame(columns=["ID", "Nome Evento / Raduno", "Data", "Luogo", "Dettagli / Note", "Locandina", "Partecipanti"])
     df.to_excel(FILE_EXCEL, index=False)
@@ -24,26 +24,27 @@ else:
         df['ID'] = [str(uuid.uuid4()) for _ in range(len(df))]
         df.to_excel(FILE_EXCEL, index=False)
 
-# --- CSS INTEGRATO (TESTO NERO NEI BOTTONI) ---
+# --- CSS DEFINITIVO ---
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
 .block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
-.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; }
-.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; color: white !important; }
 
-/* Forza colore testo nero per tutti i bottoni */
-div[data-testid="stButton"] button { 
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
+.sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.4rem !important; margin-bottom: 20px !important; }
+
+.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
+
+/* Testo nero obbligatorio su tutti i bottoni */
+div[data-testid="stButton"] button, div[data-testid="stFormSubmitButton"] button { 
     background-color: #ff9100 !important; 
     color: black !important; 
     font-weight: bold !important; 
-    width: 100%; 
-    font-family: 'Special Elite', cursive !important; 
-}
-/* Stile specifico per il bottone di eliminazione (magari rosso se preferisci, ma qui teniamo il contrasto) */
-div[data-testid="stFormSubmitButton"] button {
-    color: black !important;
+    font-family: 'Special Elite', cursive !important;
 }
 
 label { color: white !important; }
@@ -51,7 +52,10 @@ label { color: white !important; }
 """, unsafe_allow_html=True)
 
 if os.path.exists("logo_custom.png"): st.image("logo_custom.png", use_container_width=True)
+
+# --- HEADER RIPRISTINATO ---
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
 # --- AGGIUNGI EVENTO ---
 with st.expander("➕ AGGIUNGI EVENTO"):
