@@ -39,16 +39,16 @@ st.markdown("""
 
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
 
-/* La nostra riga-catena orizzontale */
+/* Tentativo rotazione catena */
 .riga-catena { 
     text-align: center;
     color: #ff9100;
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin: 20px 0;
-    font-weight: bold;
+    display: block;
+    transform: rotate(90deg);
 }
 
-/* Forza testo nero su tutti i bottoni */
 div[data-testid="stButton"] button, div[data-testid="stFormSubmitButton"] button { 
     background-color: #ff9100 !important; 
     color: black !important; 
@@ -80,8 +80,8 @@ with st.expander("➕ AGGIUNGI EVENTO"):
             pd.concat([df, nuovo], ignore_index=True).to_excel(FILE_EXCEL, index=False)
             st.rerun()
 
-# --- RIGA CATENA ORIZZONTALE ---
-st.markdown("<div class='riga-catena'>▬▬▬ ⊚ ▬▬▬ ⊚ ▬▬▬ ⊚ ▬▬▬</div>", unsafe_allow_html=True)
+# --- RIGA CATENA RUOTATA ---
+st.markdown("<div class='riga-catena'>⛓️ ⛓️ ⛓️ ⛓️ ⛓️ ⛓️ ⛓️</div>", unsafe_allow_html=True)
 
 # --- LISTA EVENTI ---
 df = pd.read_excel(FILE_EXCEL)
