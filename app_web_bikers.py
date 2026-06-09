@@ -24,34 +24,36 @@ else:
         df['ID'] = [str(uuid.uuid4()) for _ in range(len(df))]
         df.to_excel(FILE_EXCEL, index=False)
 
-# --- CSS SEMPLIFICATO E AD ALTA LEGGIBILITÀ ---
+# --- CSS ORIGINALE RIPRISTINATO ---
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
 .block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
 
-/* Font leggibile ma con stile importante */
-.titolo-principale { font-family: 'Georgia', serif !important; text-align: center; color: #ff9100 !important; font-size: 2.5rem !important; font-weight: bold; margin-bottom: 5px !important; }
-.sottotitolo { font-family: 'Georgia', serif !important; text-align: center; color: #ff9100 !important; font-size: 1.3rem !important; margin-bottom: 30px !important; }
+.titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; margin-top: -20px !important; }
+.sottotitolo { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 1.6rem !important; margin-top: 20px !important; margin-bottom: 20px !important; }
 
-.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 8px !important; }
-.stExpander div { color: white !important; }
+.stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
 
-/* Bottoni leggibili */
 div[data-testid="stButton"] button, div[data-testid="stFormSubmitButton"] button { 
     background-color: #ff9100 !important; 
     color: black !important; 
     font-weight: bold !important; 
-    font-family: sans-serif !important;
+    font-family: 'Special Elite', cursive !important;
 }
+
+label { color: white !important; }
 </style>
 """, unsafe_allow_html=True)
 
 if os.path.exists("logo_custom.png"): st.image("logo_custom.png", use_container_width=True)
 
-st.markdown("<h1 class='titolo-principale'>Iron & Rubber</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sottotitolo'>Non è la meta, è la strada a rivelare chi sei.</p>", unsafe_allow_html=True)
+st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
 # --- AGGIUNGI EVENTO ---
 with st.expander("➕ AGGIUNGI EVENTO"):
@@ -68,8 +70,8 @@ with st.expander("➕ AGGIUNGI EVENTO"):
             pd.concat([df, nuovo], ignore_index=True).to_excel(FILE_EXCEL, index=False)
             st.rerun()
 
-# --- SEZIONE PROSSIMI EVENTI ---
-st.markdown("<p class='sottotitolo' style='text-align: left; margin-top: 40px; font-size: 1.5rem; text-decoration: underline;'>PROSSIMI EVENTI</p>", unsafe_allow_html=True)
+# --- TITOLO SEZIONE RIPRISTINATO ---
+st.markdown("<p class='sottotitolo'>PROSSIMI EVENTI</p>", unsafe_allow_html=True)
 
 # --- LISTA EVENTI ---
 df = pd.read_excel(FILE_EXCEL)
@@ -105,8 +107,8 @@ for idx, row in df.iterrows():
 # --- MENU FISSO ---
 st.markdown("""
 <div style='position: fixed; bottom: 0; left: 0; width: 100%; background: #1f2124; display: flex; justify-content: flex-start; gap: 30px; padding: 15px 20px; border-top: 3px solid #ff9100; z-index: 9999;'>
-    <a href='#' style='color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem; font-family: sans-serif;'>HOME</a>
-    <a href='#' style='color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem; font-family: sans-serif;'>MC</a>
-    <a href='#' style='color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem; font-family: sans-serif;'>ADMIN</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>HOME</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>MC</a>
+    <a href='#' style='font-family: Special Elite; color: #ff9100; font-weight: bold; text-decoration: none; font-size: 1.2rem;'>ADMIN</a>
 </div>
 """, unsafe_allow_html=True)
