@@ -24,7 +24,7 @@ else:
         df['ID'] = [str(uuid.uuid4()) for _ in range(len(df))]
         df.to_excel(FILE_EXCEL, index=False)
 
-# --- CSS INTEGRATO ---
+# --- CSS INTEGRATO (TESTO NERO NEI BOTTONI) ---
 st.markdown("""
 <style>
 .stApp { background-color: #161719; }
@@ -32,7 +32,20 @@ st.markdown("""
 .block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; }
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; color: white !important; }
-div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold; width: 100%; font-family: 'Special Elite', cursive !important; }
+
+/* Forza colore testo nero per tutti i bottoni */
+div[data-testid="stButton"] button { 
+    background-color: #ff9100 !important; 
+    color: black !important; 
+    font-weight: bold !important; 
+    width: 100%; 
+    font-family: 'Special Elite', cursive !important; 
+}
+/* Stile specifico per il bottone di eliminazione (magari rosso se preferisci, ma qui teniamo il contrasto) */
+div[data-testid="stFormSubmitButton"] button {
+    color: black !important;
+}
+
 label { color: white !important; }
 </style>
 """, unsafe_allow_html=True)
