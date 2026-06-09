@@ -2,6 +2,13 @@ import streamlit as st
 import pandas as pd
 import os
 import uuid
+import locale
+
+# Imposta la localizzazione in italiano per leggere i nomi dei mesi
+try:
+    locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')
+except:
+    pass # Se il sistema non supporta l'italiano, continuerà a funzionare
 
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
@@ -24,28 +31,15 @@ else:
         df['ID'] = [str(uuid.uuid4()) for _ in range(len(df))]
         df.to_excel(FILE_EXCEL, index=False)
 
-# --- CSS INTEGRATO (TESTO NERO NEI BOTTONI) ---
+# --- CSS INTEGRATO ---
 st.markdown("""
 <style>
 .stApp { background-color: #161719; }
-#MainMenu, footer, header {visibility: hidden !important;}
+#MainMenu, footer, header {visibility: hidden !important; }
 .block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
 .titolo-gotico { font-family: 'UnifrakturMaguntia', cursive !important; text-align: center; color: #ff9100 !important; font-size: 2.6rem !important; }
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; color: white !important; }
-
-/* Forza colore testo nero per tutti i bottoni */
-div[data-testid="stButton"] button { 
-    background-color: #ff9100 !important; 
-    color: black !important; 
-    font-weight: bold !important; 
-    width: 100%; 
-    font-family: 'Special Elite', cursive !important; 
-}
-/* Stile specifico per il bottone di eliminazione (magari rosso se preferisci, ma qui teniamo il contrasto) */
-div[data-testid="stFormSubmitButton"] button {
-    color: black !important;
-}
-
+div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold !important; width: 100%; font-family: 'Special Elite', cursive !important; }
 label { color: white !important; }
 </style>
 """, unsafe_allow_html=True)
@@ -56,7 +50,7 @@ st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=Tr
 # --- AGGIUNGI EVENTO ---
 with st.expander("➕ AGGIUNGI EVENTO"):
     with st.form("add_form", clear_on_submit=True):
-        n = st.text_input("Nome Evento"); d = st.text_input("Data (AAAA-MM-GG)"); l = st.text_input("Luogo"); i = st.text_area("Info")
+        n = st.text_input("Nome Evento"); d = st.text_input("Data (es: 27 giugno 2026)"); l = st.text_input("Luogo"); i = st.text_area("Info")
         f = st.file_uploader("Locandina", type=['jpg', 'png'])
         if st.form_submit_button("SALVA"):
             if not os.path.exists("locandine"): os.makedirs("locandine")
@@ -68,10 +62,12 @@ with st.expander("➕ AGGIUNGI EVENTO"):
             pd.concat([df, nuovo], ignore_index=True).to_excel(FILE_EXCEL, index=False)
             st.rerun()
 
-# --- LISTA EVENTI ---
+# --- LISTA EVENTI CON INTERPRETAZIONE DATE ---
 df = pd.read_excel(FILE_EXCEL)
-df['Data_Date'] = pd.to_datetime(df['Data'], errors='coerce')
-df = df.sort_values(by='Data_Date', ascending=True)
+
+# Convertiamo in data gestendo il formato italiano
+df['Data_Ord'] = pd.to_datetime(df['Data'], dayfirst=True, errors='coerce')
+df = df.sort_values(by='Data_Ord', ascending=True)
 
 for idx, row in df.iterrows():
     event_id = str(row['ID'])
@@ -93,7 +89,7 @@ for idx, row in df.iterrows():
                     path = row['Locandina']
                     if new_f:
                         path = os.path.join("locandine", new_f.name)
-                        with open(path, "wb") as file: file.write(new_f.getbuffer())
+                        with open(path, "wb") as file: file.write(f.getbuffer())
                     df.loc[df['ID'] == event_id, ['Nome Evento / Raduno', 'Data', 'Luogo', 'Dettagli / Note', 'Locandina']] = [new_n, new_d, new_l, new_i, path]
                     df.to_excel(FILE_EXCEL, index=False); st.rerun()
                 if c2.form_submit_button("CANCELLA EVENTO"):
