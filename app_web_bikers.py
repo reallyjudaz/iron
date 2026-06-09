@@ -5,6 +5,8 @@ import uuid
 
 st.set_page_config(page_title="Iron & Rubber", layout="centered")
 
+FILE_EXCEL = "Lista_Eventi_Bikers_Judaz.xlsx"
+
 # --- FUNZIONI ---
 def registra_voto(id_univoco):
     with open("voti_fatti.txt", "a") as f: f.write(f"{id_univoco}\n")
@@ -12,15 +14,21 @@ def ha_gia_votato(id_univoco):
     if not os.path.exists("voti_fatti.txt"): return False
     with open("voti_fatti.txt", "r") as f: return str(id_univoco) in f.read().splitlines()
 
-FILE_EXCEL = "Lista_Eventi_Bikers_Judaz.xlsx"
+# --- CARICAMENTO E RIPRISTINO COLONNE ---
 if not os.path.exists(FILE_EXCEL):
-    df_init = pd.DataFrame(columns=["ID", "Nome Evento / Raduno", "Data", "Luogo", "Dettagli / Note", "Locandina", "Partecipanti"])
-    df_init.to_excel(FILE_EXCEL, index=False)
+    df = pd.DataFrame(columns=["ID", "Nome Evento / Raduno", "Data", "Luogo", "Dettagli / Note", "Locandina", "Partecipanti"])
+    df.to_excel(FILE_EXCEL, index=False)
+else:
+    df = pd.read_excel(FILE_EXCEL)
+    # SE MANCA LA COLONNA ID, LA CREIAMO E SALVIAMO
+    if 'ID' not in df.columns:
+        df['ID'] = [str(uuid.uuid4()) for _ in range(len(df))]
+        df.to_excel(FILE_EXCEL, index=False)
 
 # --- CSS ---
 st.markdown("""<style>
 .stApp { background-color: #161719; }
-.titolo-gotico { font-family: 'serif'; text-align: center; color: #ff9100; font-size: 2.6rem; }
+.titolo-gotico { font-family: 'serif'; text-align: center; color: #ff9100 !important; font-size: 2.6rem; }
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; color: white !important; }
 div[data-testid="stButton"] button { background-color: #ff9100 !important; color: black !important; font-weight: bold; width: 100%; }
 label { color: white !important; }
@@ -54,24 +62,19 @@ for idx, row in df.iterrows():
         st.write(f"📍 {row['Luogo']} | 📝 {row.get('Dettagli / Note', '')}")
         if os.path.exists(str(row.get('Locandina', ''))): st.image(row['Locandina'], use_container_width=True)
         
-        if st.text_input("Password Admin", type="password", key=f"p_{event_id}") == "Judaz2026":
+        pwd = st.text_input("Password Admin", type="password", key=f"p_{event_id}")
+        if pwd == "Judaz2026":
             with st.form(f"mod_form_{event_id}"):
                 new_n = st.text_input("Nome", value=row['Nome Evento / Raduno'])
                 new_d = st.text_input("Data", value=row['Data'])
                 new_l = st.text_input("Luogo", value=row['Luogo'])
                 new_i = st.text_area("Info", value=row.get('Dettagli / Note', ''))
-                new_f = st.file_uploader("Nuova Locandina", type=['jpg', 'png'])
                 
                 c1, c2 = st.columns(2)
-                if c1.form_submit_button("💾 SALVA TUTTO"):
-                    path = row['Locandina']
-                    if new_f:
-                        path = os.path.join("locandine", new_f.name)
-                        with open(path, "wb") as file: file.write(new_f.getbuffer())
-                    df.loc[df['ID'] == event_id, ['Nome Evento / Raduno', 'Data', 'Luogo', 'Dettagli / Note', 'Locandina']] = [new_n, new_d, new_l, new_i, path]
+                if c1.form_submit_button("💾 SALVA"):
+                    df.loc[df['ID'] == event_id, ['Nome Evento / Raduno', 'Data', 'Luogo', 'Dettagli / Note']] = [new_n, new_d, new_l, new_i]
                     df.to_excel(FILE_EXCEL, index=False); st.rerun()
-                
-                if c2.form_submit_button("❌ ELIMINA EVENTO"):
+                if c2.form_submit_button("❌ ELIMINA"):
                     df = df[df['ID'] != event_id]
                     df.to_excel(FILE_EXCEL, index=False); st.rerun()
 
