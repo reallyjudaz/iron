@@ -27,8 +27,6 @@ else:
 # --- CSS INTEGRATO ---
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 .stApp { background-color: #161719; }
 #MainMenu, footer, header {visibility: hidden !important;}
 .block-container { padding-top: 0rem !important; padding-bottom: 7rem !important; }
@@ -78,14 +76,14 @@ for idx, row in df.iterrows():
                 new_f = st.file_uploader("Aggiorna Locandina", type=['jpg', 'png'])
                 
                 c1, c2 = st.columns(2)
-                if c1.form_submit_button("💾 SALVA MODIFICHE"):
+                if c1.form_submit_button("SALVA"):
                     path = row['Locandina']
                     if new_f:
                         path = os.path.join("locandine", new_f.name)
                         with open(path, "wb") as file: file.write(new_f.getbuffer())
                     df.loc[df['ID'] == event_id, ['Nome Evento / Raduno', 'Data', 'Luogo', 'Dettagli / Note', 'Locandina']] = [new_n, new_d, new_l, new_i, path]
                     df.to_excel(FILE_EXCEL, index=False); st.rerun()
-                if c2.form_submit_button("❌ ELIMINA POST"):
+                if c2.form_submit_button("CANCELLA EVENTO"):
                     df = df[df['ID'] != event_id]
                     df.to_excel(FILE_EXCEL, index=False); st.rerun()
 
