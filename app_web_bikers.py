@@ -15,7 +15,6 @@ def ha_gia_votato(id_evento):
         return str(id_evento) in f.read().splitlines()
 
 # --- CARICAMENTO SICURO ---
-# Creiamo il file solo se manca, altrimenti leggiamo quello esistente
 FILE_EXCEL = "Lista_Eventi_Bikers_Judaz.xlsx"
 if not os.path.exists(FILE_EXCEL):
     df_init = pd.DataFrame(columns=["Nome Evento / Raduno", "Data", "Luogo", "Dettagli / Note", "Locandina", "Partecipanti"])
@@ -42,7 +41,6 @@ div[data-testid="stButton"] button {
     font-family: 'Special Elite', cursive !important; border-radius: 5px !important; height: 38px !important; width: 100%; 
 }
 
-/* Scritte bianche nel form */
 label, .stTextInput label, .stTextArea label, .stFileUploader label { color: white !important; }
 </style>
 """, unsafe_allow_html=True)
@@ -58,7 +56,7 @@ st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare ch
 with st.expander("➕ AGGIUNGI EVENTO"):
     with st.form("add_form", clear_on_submit=True):
         n = st.text_input("Nome Evento")
-        d = st.text_input("Data")
+        d = st.text_input("Data (es: 2026-12-31)")
         l = st.text_input("Luogo")
         i = st.text_area("Info")
         f = st.file_uploader("Locandina", type=['jpg', 'png'])
@@ -74,10 +72,14 @@ with st.expander("➕ AGGIUNGI EVENTO"):
             df.to_excel(FILE_EXCEL, index=False)
             st.rerun()
 
-# --- LISTA EVENTI E LOGICA ---
+# --- LISTA EVENTI E ORDINE ---
 try:
     df = pd.read_excel(FILE_EXCEL)
-    # Forza la colonna partecipanti a essere numerica per evitare azzeramenti
+    # Conversione Data per ordinamento: cerchiamo di interpretare la data
+    df['Data_Date'] = pd.to_datetime(df['Data'], errors='coerce')
+    df = df.sort_values(by='Data_Date', ascending=True)
+    
+    # Forza la colonna partecipanti a essere numerica
     df['Partecipanti'] = pd.to_numeric(df['Partecipanti'], errors='coerce').fillna(0).astype(int)
 
     for i, row in df.iterrows():
@@ -89,7 +91,7 @@ try:
             if img_path and os.path.exists(img_path):
                 st.image(img_path, use_container_width=True)
             
-            # Modifica Protetta da Password
+            # Modifica Protetta
             pwd = st.text_input(f"Password per modificare {i}", type="password", key=f"p_{i}")
             if pwd == "Judaz2026":
                 new_info = st.text_area(f"Modifica Info {i}", value=str(row.get('Dettagli / Note', '')), key=f"edit_{i}")
