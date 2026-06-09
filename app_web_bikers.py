@@ -39,7 +39,14 @@ st.markdown("""
 
 .stExpander { background-color: #1f2124 !important; border: 2px solid #ff9100 !important; border-radius: 10px !important; color: white !important; }
 
-/* Testo nero obbligatorio su tutti i bottoni */
+/* La nostra riga-catena */
+.riga-catena { 
+    border-top: 4px dashed #ff9100; 
+    margin: 20px 0; 
+    position: relative;
+    opacity: 0.6;
+}
+
 div[data-testid="stButton"] button, div[data-testid="stFormSubmitButton"] button { 
     background-color: #ff9100 !important; 
     color: black !important; 
@@ -53,7 +60,6 @@ label { color: white !important; }
 
 if os.path.exists("logo_custom.png"): st.image("logo_custom.png", use_container_width=True)
 
-# --- HEADER RIPRISTINATO ---
 st.markdown("<h1 class='titolo-gotico'>Iron & Rubber</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sottotitolo'>«Non è la meta, è la strada a rivelare chi sei.»</p>", unsafe_allow_html=True)
 
@@ -71,6 +77,9 @@ with st.expander("➕ AGGIUNGI EVENTO"):
             nuovo = pd.DataFrame([{"ID": str(uuid.uuid4()), "Nome Evento / Raduno": n, "Data": d, "Luogo": l, "Dettagli / Note": i, "Locandina": path, "Partecipanti": 0}])
             pd.concat([df, nuovo], ignore_index=True).to_excel(FILE_EXCEL, index=False)
             st.rerun()
+
+# --- RIGA CATENA ---
+st.markdown("<div class='riga-catena'></div>", unsafe_allow_html=True)
 
 # --- LISTA EVENTI ---
 df = pd.read_excel(FILE_EXCEL)
